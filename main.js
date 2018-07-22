@@ -9,6 +9,8 @@ const BigNumber = require('bignumber.js');
 const fs = require("fs");
 const isopen = require("isopen");
 const tcpscan = require('simple-tcpscan');
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
 const botSettings = require("./configs/config.json");
 const miscSettings = require("./configs/settings.json");
@@ -23,14 +25,6 @@ var con = mysql.createPool({
   database: "EGEMTest"
 });
 
-// con.connect(function(err) {
-//   if (err) throw err;
-//   //Select all customers and return the result object:
-//   con.query("SELECT * FROM customers", function (err, result, fields) {
-//     if (err) throw err;
-//     console.log(result);
-//   });
-// });
 
 // EtherGem web3
 var web3 = new Web3();
@@ -50,6 +44,71 @@ const threadHB = function sendHB(){
 };
 setInterval(threadHB,miscSettings.HBDelay);
 
+function getJson(){ return JSON.parse(fs.readFileSync('./data/nodes.txt'));}
+
+// Update Node List: Online/Offline
+const updateNodes = function queryNodes(){
+  con.getConnection(function(err, connection) {
+    connection.query("SELECT * FROM data", function (err, result, fields){
+      if (!result) return message.reply("No Results.");
+      let obj = JSON.stringify(result);
+      let parsed = JSON.parse(obj);
+      fs.writeFile("./data/nodes.txt",obj,(err)=>{
+        if(err) throw err;
+      });
+      // Object.keys(result).forEach(function(key) {
+      //   var row = result[key];
+      //   tcpscan.run({'host': row.ip, 'port': 30666}).then(
+      //     () => {
+      //       console.log('Online')
+      //       //bot.channels.get(botChans.botChannelId).send(row.ip + " | is ONLINE!")
+      //       //sql.run(`UPDATE data SET isOnline ="Online" WHERE userId ="${message.author.id}"`);
+      //     },
+      //     () => {
+      //       console.log('Offline')
+      //       //bot.channels.get(botChans.botChannelId).send(row.ip + " | is OFFLINE!")
+      //       //sql.run(`UPDATE data SET isOnline ="Offline" WHERE userId ="${message.author.id}"`)
+      //     }
+      //   );
+      // });
+      connection.release();
+    });
+
+  });
+	console.log("List updated.");
+  let txdata = getJson();
+  Object.keys(txdata).forEach(function(key) {
+    var row = txdata[key];
+    if (row.isOnline !== "Online") {
+      tcpscan.run({'host': row.ip, 'port': 30666}).then(
+        () => {
+          con.getConnection(function(err, connection) {
+            connection.query(`UPDATE data SET isOnline ="Online" WHERE userId = ?`, row.userId)
+            connection.release();
+          });
+          //bot.channels.get(botChans.botChannelId).send(row.ip + " | is ONLINE!")
+          //sql.run(`UPDATE data SET isOnline ="Online" WHERE userId ="${message.author.id}"`);
+        },
+        () => {
+          con.getConnection(function(err, connection) {
+            connection.query(`UPDATE data SET isOnline ="Offline" WHERE userId = ?`, row.userId)
+            connection.release();
+          });
+          //bot.channels.get(botChans.botChannelId).send(row.ip + " | is OFFLINE!")
+          //sql.run(`UPDATE data SET isOnline ="Offline" WHERE userId ="${message.author.id}"`)
+        }
+      );
+
+    }
+  });
+  con.getConnection(function(err, connection) {
+
+    connection.release();
+  });
+};
+setInterval(updateNodes,miscSettings.NodeDelay);
+
+
 // Main file bot commands
 bot.on('message',async message => {
 
@@ -60,12 +119,12 @@ bot.on('message',async message => {
 	let args = message.content.split(' ');
 
 // Register with bot.
-  if(message.content.startsWith(prefix + "nodereg ")){
+  if(message.content.startsWith(prefix + "nReg ")){
 
     let address = args[1];
     let ip = args[2];
     let balance = await web3.eth.getBalance(address)/Math.pow(10,18);
-    let isOnline = "yes";
+    let isOnline = "unknown";
     let author = message.author.id;
     let user = message.author.username;
 
@@ -104,7 +163,7 @@ bot.on('message',async message => {
   }
 
 // Check to see if registered.
-  if(message.content == prefix + "nodecheck"){
+  if(message.content == prefix + "nCheck"){
 
     con.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
@@ -129,6 +188,7 @@ bot.on('message',async message => {
         );
 
         message.reply(`Registered to ${address} | Linked to ${ip} | with a balance of ${balance} EGEM.`);
+        connection.release();
       });
 
  });
@@ -136,18 +196,20 @@ bot.on('message',async message => {
 
 
 // List Nodes.
+  if(message.content == prefix + "ln"){
+    con.getConnection(function(err, connection) {
+      connection.query("SELECT * FROM data", function (err, result, fields){
+        if (!result) return message.reply("No Results.");
 
-  if(message.content == prefix + "listnodes"){
-    // sql.get(`SELECT * FROM data`).then(row => {
-    //   if (!row) return message.reply("Not Registered");
-    //
-    //   let text = "";
-    //   for (const x in row.userId) {
-    //       text += row.userId + " ";
-    //   }
-		// 	let resT = JSON.stringify(text)
-		// 	message.channel.send(resT);
-    // });
+        Object.keys(result).forEach(function(key) {
+          var row = result[key];
+          message.channel.send(" Name: " + row.userName + " | Address: " + row.address + " | UserID: " + row.userId + " | Status: " + row.isOnline);
+        });
+        connection.release();
+      });
+
+    });
+
   }
 
 })
