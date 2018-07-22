@@ -1,0 +1,18 @@
+{
+	"web3provider": "http://localhost:8545",
+	"websiteLink": "https://egem.io/",
+	"forumLink": "https://forum.egem.io/",
+	"txlistpath": "data/txlist.json",
+  "path": "data/users.json",
+  "prefix": "/",
+	"tickerSymbol": "EGEM",
+	"footerBranding": "© EGEM.io",
+  "HBDelay": "60000",
+  "warningcolor": "0xFF0000",
+  "okcolor": "0x00AE86",
+  "egemcolor": "0x00E5FF",
+  "img32x32": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/32x32.png",
+  "img32shard": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/various/32.png",
+  "egemspin":  "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/animated/egem_gray_28.gif",
+  "dice32": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/dice32.png"
+}
