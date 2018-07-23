@@ -32,11 +32,22 @@ exports.run = (client, message, args) => {
         let obj = JSON.parse(parsed);
         let authorCheck = obj[0]["userId"];
         let amount = obj[0]["balance"];
+        let address = obj[0]["address"];
+        let canEarn = obj[0]["canEarn"];
+        let hasCheated = obj[0]["hasCheated"];
         if (authorCheck == author) {
           if (author == authorCheck) {
             connection.release();
             console.log(obj);
-            return message.reply("you have " + amount + " EGEM (Rounded Balance)");
+            var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + address, function(error, response){
+              if(!error) {
+                var amount2 = response["BALANCE"];
+                return message.reply("you have " + amount2 + " EGEM (Rounded Balance) | " + amount + " EGEM" + " | User has Cheated: " + hasCheated + " | Can Earn: " + canEarn);
+              } else {
+                console.log(error);
+              }
+            })
+
           }
         }
       }catch(e){

@@ -34,7 +34,9 @@ setInterval(threadHB,miscSettings.HBDelay);
 // Function to turn files into commands.
 bot.on("message", message => {
 
-  if(message.author.bot) return;
+  if(message.author.bot) return;	
+	if(message.channel.type === "dm") return;
+	if(message.channel.name !== 'community-dev') return;
   if(message.content.indexOf(miscSettings.prefix) !== 0) return;
 
   // This is the best way to define args. Trust me.
@@ -47,7 +49,7 @@ bot.on("message", message => {
     commandFile.run(bot, message, args);
   } catch (err) {
 		console.log("**EGEM BOT** No file for that command, prolly other system in use.")
-    //console.error(err);
+    console.error(err);
   }
 });
 

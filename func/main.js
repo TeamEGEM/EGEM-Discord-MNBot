@@ -52,7 +52,10 @@ function myFunc(callback, args)
     callback.apply(this, args);
 }
 
+function getNodes(){ return JSON.parse(fs.readFileSync('./data/nodes.txt'));};
+
 // exports the variables and functions above so that other modules can use them
 module.exports.getData = getData;
 module.exports.myFunc = myFunc;
 module.exports.getStats = getStats;
+module.exports.getNodes = getNodes;

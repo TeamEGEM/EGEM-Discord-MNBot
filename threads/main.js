@@ -59,7 +59,7 @@ const threadHB = function sendHB(){
 };
 setInterval(threadHB,miscSettings.HBDelay);
 
-// Update Node List: Online/Offline
+// Update Node List: Online/Offline and balance
 function getNodes(){ return JSON.parse(fs.readFileSync('./data/nodes.txt'));}
 
 const updateNodes = function queryNodes(){
@@ -74,114 +74,56 @@ const updateNodes = function queryNodes(){
       connection.release();
     });
   });
-	console.log("List updated.");
+
   let txdata = getNodes();
   Object.keys(txdata).forEach(function(key) {
     var row = txdata[key];
-    if (row.isOnline !== "Online") {
+    if (row.isOnline !== "Online" || row.isOnline !== "Offline") {
       tcpscan.run({'host': row.ip, 'port': 30666}).then(
         () => {
-          con.getConnection(function(err, connection) {
-            connection.query(`UPDATE data SET isOnline ="Online" WHERE userId = ?`, row.userId)
-            connection.release();
-          });
+          var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + row.address, function(error, response){
+            if(!error) {
+              let amount = response["BALANCE"];
+              con.getConnection(function(err, connection) {
+                connection.query(`UPDATE data SET balance = ? WHERE userId = ?`, [amount, row.userId]);
+                connection.query(`UPDATE data SET isOnline ="Online" WHERE userId = ?`, row.userId);
+                if (amount > 10000) {
+                  connection.query(`UPDATE data SET canEarn ="Yes" WHERE userId = ?`, row.userId);
+                } else {
+                  connection.query(`UPDATE data SET canEarn ="No" WHERE userId = ?`, row.userId);
+                }
+                connection.release();
+                console.log("List Updated: Online. - " + row.userId + " | Node IP: " + row.ip + " | Balance: " + amount + " EGEM." + " | Can Earn: " + row.canEarn);
+              });
+            } else {
+              console.log(error);
+            }
+          })
         },
         () => {
-          con.getConnection(function(err, connection) {
-            connection.query(`UPDATE data SET isOnline ="Offline" WHERE userId = ?`, row.userId)
-            connection.release();
-          });
+          var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + row.address, function(error, response){
+            if(!error) {
+              let amount = response["BALANCE"];
+              con.getConnection(function(err, connection) {
+                connection.query(`UPDATE data SET balance = ? WHERE userId = ?`, [amount, row.userId]);
+                connection.query(`UPDATE data SET isOnline ="Offline" WHERE userId = ?`, row.userId);
+                connection.query(`UPDATE data SET canEarn ="No" WHERE userId = ?`, row.userId);
+                connection.release();
+                console.log("List Updated: Offline. - " + row.userId + " | Node IP: " + row.ip + " | Balance: " + amount + " EGEM." + " | Can Earn: " + row.canEarn);
+              });
+            } else {
+              console.log(error);
+            }
+          })
+
         }
       );
 
     }
   });
+  console.log("------Node List Updating:------");
 };
 setInterval(updateNodes,miscSettings.NodeDelay);
-
-// Object.keys(txdata).forEach(function(key) {
-//   var row = txdata[key];
-//   try {
-//     let balance = web3.eth.getBalance(row.address)/Math.pow(10,18);
-//     console.log(balance);
-//   } catch (e) {
-//     console.log(e)
-//   } finally {
-//
-//     // con.getConnection(function(err, connection) {
-//     //   connection.query(`UPDATE data SET balance = ? WHERE userId = ?`, [balance, row.userId]);
-//     //   connection.release();
-//     // });
-//   }
-//
-// });
-
-//
-//   async function updateSQLBalance() {
-//     let txdata = getNodes();
-//     await Object.keys(txdata).forEach(function(key) {
-//
-//       let balance = await web3.eth.getBalance(row.address)/Math.pow(10,18);
-//       var row = txdata[key];
-//
-//       console.log(row.address);
-//     });
-//     // await getJSON('https://api.egem.io/api/v1/egem_prices', function(error, response){
-//     //   var data = "";
-//     //   if(!error) {
-//     //     let use = response['AVERAGEUSD'];
-//     //     console.log(use);
-//     //   }
-//     //   // var row = dataStr[key];
-//     // })
-//     // for (const x of row.ip) {
-//     //   console.log(row.ip);
-//     // }
-//   }
-//   updateSQLBalance();
-// var row = data[key];
-// let balance = web3.eth.getBalance(row.address)/Math.pow(10,18);
-// let balStr = JSON.stringify(balance);
-// let balParsed = JSON.parse(balStr);
-// //console.log(balParsed);
-// console.log(row.address + " | " + balParsed);
-// return "done"
-
-
-// // // Update Balance List:
-// const updateNodesBal = function queryNodesBal(){
-//
-//   const makeRequest = async () => {
-//     let functions = require('./func/main.js');
-//     let data = functions.getData();
-//     Object.keys(data).forEach(function(key) {
-//       var row = data[key];
-//       try {
-//         //console.log(row.balance);
-//         let mysql = require('mysql');
-//
-//         let con = mysql.createPool({
-//           connectionLimit : 25,
-//           host: "localhost",
-//           user: "root",
-//           password: botSettings.mysqlpass,
-//           database: "EGEMTest"
-//         });
-//         con.getConnection(function(err, connection) {
-//           connection.query(`UPDATE data SET balance = ? WHERE userId = ?`, [ row.balance, row.address])
-//           connection.release();
-//         });
-//         functions.myFunc(functions.getStats(), [ row.address, row.balance])
-//
-//       } catch (e) {
-//         console.log(e)
-//       }
-//     })
-//   }
-//   makeRequest()
-//   console.log("Balance of users updated.");
-// };
-// setInterval(updateNodesBal,miscSettings.NodeBalDelay);
 
 
 // Main file bot commands
@@ -189,12 +131,13 @@ bot.on('message',async message => {
 
 	if(message.author.bot) return;
 	if(message.channel.type === "dm") return;
+  if(message.channel.name !== 'community-dev') return;
 
 	var message = message;
 	let args = message.content.split(' ');
 
 // Register with bot.
-  if(message.content.startsWith(prefix + "nReg ")){
+  if(message.content.startsWith(prefix + "register ")){
 
     let address = args[1];
     let ip = args[2];
@@ -237,36 +180,49 @@ bot.on('message',async message => {
 
   }
 
+  // Check to see if registered.
+  	if(message.content == prefix + "checkreg"){
+  		var user = message.author.username;
+  		let author = message.author.id;
+  		let data = getNodes();
+  		if(Object.keys(data).includes(author)){
+  			message.channel.send("@"+ user + " already registered, your discord ID is: " + author);
+  		} else {
+  			message.channel.send("You are not in the list, use **/register** command fist.");
+  		}
+  	}
+
 // Check to see if registered.
   if(message.content == prefix + "nCheck"){
 
-    con.getConnection(function(err, connection) {
-      if (err) throw err; // not connected!
-      let author = message.author.id;
-      connection.query("SELECT * FROM data WHERE userId = ?", author, function (err, result) {
-        if (!result) return message.reply("User Not Registered.");
-        let parsed = JSON.stringify(result);
-        let obj = JSON.parse(parsed);
-        console.log(obj);
-        let address = obj[0]["address"];
-        let balance = obj[0]["balance"];
-        let ip = obj[0]["ip"];
-        tcpscan.run({'host': result.ip, 'port': 30666}).then(
-          () => {
-            message.channel.send("NODE is ONLINE!")
-            //sql.run(`UPDATE data SET isOnline ="Online" WHERE userId ="${message.author.id}"`);
-          },
-          () => {
-            message.channel.send("NODE is OFFLINE!")
-            //sql.run(`UPDATE data SET isOnline ="Offline" WHERE userId ="${message.author.id}"`)
-          }
-        );
+ //    con.getConnection(function(err, connection) {
+ //      if (err) throw err; // not connected!
+ //      let author = message.author.id;
+ //      connection.query("SELECT * FROM data WHERE userId = ?", author, function (err, result) {
+ //        if (!result) return message.reply("User Not Registered.");
+ //        let parsed = JSON.stringify(result);
+ //        let obj = JSON.parse(parsed);
+ //        console.log(obj);
+ //        let address = obj[0]["address"];
+ //        let balance = obj[0]["balance"];
+ //        let ip = obj[0]["ip"];
+ //        tcpscan.run({'host': result.ip, 'port': 30666}).then(
+ //          () => {
+ //            message.channel.send("NODE is ONLINE!")
+ //            //sql.run(`UPDATE data SET isOnline ="Online" WHERE userId ="${message.author.id}"`);
+ //          },
+ //          () => {
+ //            message.channel.send("NODE is OFFLINE!")
+ //            //sql.run(`UPDATE data SET isOnline ="Offline" WHERE userId ="${message.author.id}"`)
+ //          }
+ //        );
+ //
+ //        message.reply(`Registered to ${address} | Linked to ${ip} | with a balance of ${balance} EGEM.`);
+ //        connection.release();
+ //      });
+ //
+ // });
 
-        message.reply(`Registered to ${address} | Linked to ${ip} | with a balance of ${balance} EGEM.`);
-        connection.release();
-      });
-
- });
 }
 
 

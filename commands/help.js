@@ -18,7 +18,8 @@ exports.run = (client, message, args) => {
     .addField(prefix+"ln", "shows the list of nodes.")
     .addField(prefix+"register <address> <ip>", "register node.")
     .addField(prefix+"checkreg", "shows the status of your node/registration.")
-    .addField(prefix+"balance <address>", "shows users balance.")
+    .addField(prefix+"balance <address>", "check a users balance.")
+    .addField(prefix+"mybal", "check own balance.")
 
     message.channel.send({embed})
 }
