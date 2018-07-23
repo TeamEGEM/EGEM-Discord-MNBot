@@ -6,25 +6,40 @@ var _ = require('lodash');
 const Web3 = require("web3");
 const Discord = require("discord.js");
 const BigNumber = require('bignumber.js');
-const fs = require("fs");
+const fs = require("fs-extra");
 const isopen = require("isopen");
 const tcpscan = require('simple-tcpscan');
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
+var async = require("async");
 
-const botSettings = require("./configs/config.json");
-const miscSettings = require("./configs/settings.json");
-const botChans = require("./configs/botchans.json");
+
+
+const botSettings = require("../configs/config.json");
+const miscSettings = require("../configs/settings.json");
+const botChans = require("../configs/botchans.json");
 var mysql = require('mysql');
 
 var con = mysql.createPool({
-  connectionLimit : 100,
+  connectionLimit : 25,
   host: "localhost",
   user: "root",
   password: botSettings.mysqlpass,
   database: "EGEMTest"
 });
 
+
+// List of functions needed.
+// -register (done)
+// -check reg (done)
+// -listnodes (done)
+// -update online/offline (done)
+// -check if online more than X amount of time and has X balance.
+// -keep track of payments / return payment stats based on registered nodes.
+// -find a way to export data for extra stats/functions.
+// -increment balance owed
+// -calculate users balance
+// -send coins
 
 // EtherGem web3
 var web3 = new Web3();
@@ -44,9 +59,9 @@ const threadHB = function sendHB(){
 };
 setInterval(threadHB,miscSettings.HBDelay);
 
-function getJson(){ return JSON.parse(fs.readFileSync('./data/nodes.txt'));}
-
 // Update Node List: Online/Offline
+function getNodes(){ return JSON.parse(fs.readFileSync('./data/nodes.txt'));}
+
 const updateNodes = function queryNodes(){
   con.getConnection(function(err, connection) {
     connection.query("SELECT * FROM data", function (err, result, fields){
@@ -56,27 +71,11 @@ const updateNodes = function queryNodes(){
       fs.writeFile("./data/nodes.txt",obj,(err)=>{
         if(err) throw err;
       });
-      // Object.keys(result).forEach(function(key) {
-      //   var row = result[key];
-      //   tcpscan.run({'host': row.ip, 'port': 30666}).then(
-      //     () => {
-      //       console.log('Online')
-      //       //bot.channels.get(botChans.botChannelId).send(row.ip + " | is ONLINE!")
-      //       //sql.run(`UPDATE data SET isOnline ="Online" WHERE userId ="${message.author.id}"`);
-      //     },
-      //     () => {
-      //       console.log('Offline')
-      //       //bot.channels.get(botChans.botChannelId).send(row.ip + " | is OFFLINE!")
-      //       //sql.run(`UPDATE data SET isOnline ="Offline" WHERE userId ="${message.author.id}"`)
-      //     }
-      //   );
-      // });
       connection.release();
     });
-
   });
 	console.log("List updated.");
-  let txdata = getJson();
+  let txdata = getNodes();
   Object.keys(txdata).forEach(function(key) {
     var row = txdata[key];
     if (row.isOnline !== "Online") {
@@ -86,27 +85,103 @@ const updateNodes = function queryNodes(){
             connection.query(`UPDATE data SET isOnline ="Online" WHERE userId = ?`, row.userId)
             connection.release();
           });
-          //bot.channels.get(botChans.botChannelId).send(row.ip + " | is ONLINE!")
-          //sql.run(`UPDATE data SET isOnline ="Online" WHERE userId ="${message.author.id}"`);
         },
         () => {
           con.getConnection(function(err, connection) {
             connection.query(`UPDATE data SET isOnline ="Offline" WHERE userId = ?`, row.userId)
             connection.release();
           });
-          //bot.channels.get(botChans.botChannelId).send(row.ip + " | is OFFLINE!")
-          //sql.run(`UPDATE data SET isOnline ="Offline" WHERE userId ="${message.author.id}"`)
         }
       );
 
     }
   });
-  con.getConnection(function(err, connection) {
-
-    connection.release();
-  });
 };
 setInterval(updateNodes,miscSettings.NodeDelay);
+
+// Object.keys(txdata).forEach(function(key) {
+//   var row = txdata[key];
+//   try {
+//     let balance = web3.eth.getBalance(row.address)/Math.pow(10,18);
+//     console.log(balance);
+//   } catch (e) {
+//     console.log(e)
+//   } finally {
+//
+//     // con.getConnection(function(err, connection) {
+//     //   connection.query(`UPDATE data SET balance = ? WHERE userId = ?`, [balance, row.userId]);
+//     //   connection.release();
+//     // });
+//   }
+//
+// });
+
+//
+//   async function updateSQLBalance() {
+//     let txdata = getNodes();
+//     await Object.keys(txdata).forEach(function(key) {
+//
+//       let balance = await web3.eth.getBalance(row.address)/Math.pow(10,18);
+//       var row = txdata[key];
+//
+//       console.log(row.address);
+//     });
+//     // await getJSON('https://api.egem.io/api/v1/egem_prices', function(error, response){
+//     //   var data = "";
+//     //   if(!error) {
+//     //     let use = response['AVERAGEUSD'];
+//     //     console.log(use);
+//     //   }
+//     //   // var row = dataStr[key];
+//     // })
+//     // for (const x of row.ip) {
+//     //   console.log(row.ip);
+//     // }
+//   }
+//   updateSQLBalance();
+// var row = data[key];
+// let balance = web3.eth.getBalance(row.address)/Math.pow(10,18);
+// let balStr = JSON.stringify(balance);
+// let balParsed = JSON.parse(balStr);
+// //console.log(balParsed);
+// console.log(row.address + " | " + balParsed);
+// return "done"
+
+
+// // // Update Balance List:
+// const updateNodesBal = function queryNodesBal(){
+//
+//   const makeRequest = async () => {
+//     let functions = require('./func/main.js');
+//     let data = functions.getData();
+//     Object.keys(data).forEach(function(key) {
+//       var row = data[key];
+//       try {
+//         //console.log(row.balance);
+//         let mysql = require('mysql');
+//
+//         let con = mysql.createPool({
+//           connectionLimit : 25,
+//           host: "localhost",
+//           user: "root",
+//           password: botSettings.mysqlpass,
+//           database: "EGEMTest"
+//         });
+//         con.getConnection(function(err, connection) {
+//           connection.query(`UPDATE data SET balance = ? WHERE userId = ?`, [ row.balance, row.address])
+//           connection.release();
+//         });
+//         functions.myFunc(functions.getStats(), [ row.address, row.balance])
+//
+//       } catch (e) {
+//         console.log(e)
+//       }
+//     })
+//   }
+//   makeRequest()
+//   console.log("Balance of users updated.");
+// };
+// setInterval(updateNodesBal,miscSettings.NodeBalDelay);
 
 
 // Main file bot commands
@@ -200,19 +275,29 @@ bot.on('message',async message => {
     con.getConnection(function(err, connection) {
       connection.query("SELECT * FROM data", function (err, result, fields){
         if (!result) return message.reply("No Results.");
-
         Object.keys(result).forEach(function(key) {
           var row = result[key];
           message.channel.send(" Name: " + row.userName + " | Address: " + row.address + " | UserID: " + row.userId + " | Status: " + row.isOnline);
         });
         connection.release();
       });
-
     });
-
   }
 
+
+// End
 })
+
+
+
+  // Object.keys(txdata).forEach(function(key) {
+  //   var row = txdata[key];
+  //
+  // });
+  // con.getConnection(function(err, connection) {
+  //
+  //   connection.release();
+  // });
 
 
 // Login the bot.
