@@ -15,10 +15,13 @@ exports.run = (client, message, args) => {
 
     .setTimestamp()
     .setURL("https://github.com/TeamEGEM/EGEM-Bot")
-    .addField(prefix+"ln", "shows the list of nodes.")
-    .addField(prefix+"register <address> <ip>", "register node.")
-    .addField(prefix+"checkreg", "shows the status of your node/registration.")
-    .addField(prefix+"balance <address>", "check a users balance.")
+    .addField(prefix+"listnodes", "shows the list of nodes. (ADMINS ONLY)")
+    .addField(prefix+"flagcheater", "self explanatory. (ADMINS ONLY)")
+    .addField(prefix+"nodereg <egemaddress> <ip>", "register node.")
+    .addField(prefix+"nodestats", "shows the status of nodes.")
+    .addField(prefix+"change0x <egemaddress>", "change address of your node/registration.")
+    .addField(prefix+"changeip <ip>", "change ip of your node/registration.")
+    .addField(prefix+"balance <egemaddress>", "check a users balance.")
     .addField(prefix+"mybal", "check own balance.")
 
     message.channel.send({embed})

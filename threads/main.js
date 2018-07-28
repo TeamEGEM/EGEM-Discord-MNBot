@@ -12,6 +12,7 @@ const tcpscan = require('simple-tcpscan');
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 var async = require("async");
+require('console-color-mr');
 
 
 
@@ -22,10 +23,10 @@ var mysql = require('mysql');
 
 var con = mysql.createPool({
   connectionLimit : 25,
-  host: "localhost",
-  user: "root",
+  host: botSettings.mysqlip,
+  user: botSettings.mysqluser,
   password: botSettings.mysqlpass,
-  database: "EGEMTest"
+  database: botSettings.mysqldb
 });
 
 
@@ -49,8 +50,8 @@ const prefix = miscSettings.prefix;
 const bot = new Discord.Client({disableEveryone:true});
 
 bot.on('ready', ()=>{
-	console.log("**NODE SYSTEM** is now Online.");
-	bot.channels.get(botChans.botChannelId).send("**NODE THREAD** is now **Online.**");
+	console.debug("**NODE SYSTEM** is now Online.");
+	//bot.channels.get(botChans.botChannelId).send("**NODE THREAD** is now **Online.**");
 });
 
 // Thread console heartbeat
@@ -84,16 +85,21 @@ const updateNodes = function queryNodes(){
           var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + row.address, function(error, response){
             if(!error) {
               let amount = response["BALANCE"];
+              var regtx = row.regTxSent;
               con.getConnection(function(err, connection) {
                 connection.query(`UPDATE data SET balance = ? WHERE userId = ?`, [amount, row.userId]);
                 connection.query(`UPDATE data SET isOnline ="Online" WHERE userId = ?`, row.userId);
-                if (amount > 10000) {
-                  connection.query(`UPDATE data SET canEarn ="Yes" WHERE userId = ?`, row.userId);
+                if (regtx == "Yes") {
+                  if (amount > 10000) {
+                    connection.query(`UPDATE data SET canEarn ="Yes" WHERE userId = ?`, row.userId);
+                  } else {
+                    connection.query(`UPDATE data SET canEarn ="No" WHERE userId = ?`, row.userId);
+                  }
                 } else {
                   connection.query(`UPDATE data SET canEarn ="No" WHERE userId = ?`, row.userId);
                 }
                 connection.release();
-                console.log("List Updated: Online. - " + row.userId + " | Node IP: " + row.ip + " | Balance: " + amount + " EGEM." + " | Can Earn: " + row.canEarn);
+                console.info("Status: Online. - " + row.userId + " | Node IP: " + row.ip + " | Balance: " + amount + " EGEM." + " | Can Earn: " + row.canEarn);
               });
             } else {
               console.log(error);
@@ -109,7 +115,7 @@ const updateNodes = function queryNodes(){
                 connection.query(`UPDATE data SET isOnline ="Offline" WHERE userId = ?`, row.userId);
                 connection.query(`UPDATE data SET canEarn ="No" WHERE userId = ?`, row.userId);
                 connection.release();
-                console.log("List Updated: Offline. - " + row.userId + " | Node IP: " + row.ip + " | Balance: " + amount + " EGEM." + " | Can Earn: " + row.canEarn);
+                console.error("Status: Offline. - " + row.userId + " | Node IP: " + row.ip + " | Balance: " + amount + " EGEM." + " | Can Earn: " + row.canEarn);
               });
             } else {
               console.log(error);
@@ -121,7 +127,7 @@ const updateNodes = function queryNodes(){
 
     }
   });
-  console.log("------Node List Updating:------");
+  console.debug("------Node Status Updating:------");
 };
 setInterval(updateNodes,miscSettings.NodeDelay);
 
@@ -137,7 +143,7 @@ bot.on('message',async message => {
 	let args = message.content.split(' ');
 
 // Register with bot.
-  if(message.content.startsWith(prefix + "register ")){
+  if(message.content.startsWith(prefix + "nodereg ")){
 
     let address = args[1];
     let ip = args[2];
@@ -148,7 +154,6 @@ bot.on('message',async message => {
 
     con.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
-
       connection.query("SELECT userId FROM data WHERE userId = ?", author, function (err, result) {
 
         if (err) console.log(err);
@@ -180,17 +185,33 @@ bot.on('message',async message => {
 
   }
 
-  // Check to see if registered.
-  	if(message.content == prefix + "checkreg"){
-  		var user = message.author.username;
-  		let author = message.author.id;
-  		let data = getNodes();
-  		if(Object.keys(data).includes(author)){
-  			message.channel.send("@"+ user + " already registered, your discord ID is: " + author);
-  		} else {
-  			message.channel.send("You are not in the list, use **/register** command fist.");
-  		}
-  	}
+// Check to see if registered.
+	if(message.content.startsWith(prefix + "addtx ")){
+    let regtx = args[1];
+    let author = message.author.id;
+    let user = message.author.username;
+
+    con.getConnection(function(err, connection) {
+      connection.query('INSERT INTO regtx (userId, txresult) VALUES (?, ?)', [author, regtx]);
+      connection.query(`UPDATE data SET regTxSent ="Yes" WHERE userId = ?`, author);
+      message.reply("You have added a TX to the database, thank you for registering.");
+      connection.release();
+      console.log("TX has been registered thank you. - " + regtx );
+    });
+
+	}
+
+// Check to see if registered.
+	if(message.content == prefix + "checkreg"){
+		// var user = message.author.username;
+		// let author = message.author.id;
+		// let data = getNodes();
+		// if(Object.keys(data).includes(author)){
+		// 	message.channel.send("@"+ user + " already registered, your discord ID is: " + author);
+		// } else {
+		// 	message.channel.send("You are not in the list, use **/register** command fist.");
+		// }
+	}
 
 // Check to see if registered.
   if(message.content == prefix + "nCheck"){
@@ -227,7 +248,10 @@ bot.on('message',async message => {
 
 
 // List Nodes.
-  if(message.content == prefix + "ln"){
+  if(message.content == prefix + "listnodes"){
+    if(!message.member.hasPermission('ADMINISTRATOR')){
+      return message.channel.send("You cannot use '/adminhelp' command");
+    }
     con.getConnection(function(err, connection) {
       connection.query("SELECT * FROM data", function (err, result, fields){
         if (!result) return message.reply("No Results.");

@@ -8,10 +8,12 @@ const Discord = require("discord.js");
 const BigNumber = require('bignumber.js');
 const fs = require("fs-extra");
 const randomWord = require('random-word');
+require('console-color-mr');
 
 const botSettings = require("../configs/config.json");
 const miscSettings = require("../configs/settings.json");
 const botChans = require("../configs/botchans.json");
+
 
 // EtherGem web3
 var web3 = new Web3();
@@ -21,20 +23,20 @@ const prefix = miscSettings.prefix;
 const bot = new Discord.Client({disableEveryone:true});
 
 bot.on('ready', ()=>{
-	console.log("**COMMAND THREAD** is now Online.");
-	bot.channels.get(botChans.botChannelId).send("**COMMAND THREAD** is now **Online.**");
+	console.debug("**COMMAND THREAD** is now Online.");
+	//bot.channels.get(botChans.botChannelId).send("**COMMAND THREAD** is now **Online.**");
 });
 
 // Thread console heartbeat
 const threadHB = function sendHB(){
-	console.log("**COMMAND THREAD** is ACTIVE");
+	console.debug("**COMMAND THREAD** is ACTIVE");
 };
 setInterval(threadHB,miscSettings.HBDelay);
 
 // Function to turn files into commands.
 bot.on("message", message => {
 
-  if(message.author.bot) return;	
+  if(message.author.bot) return;
 	if(message.channel.type === "dm") return;
 	if(message.channel.name !== 'community-dev') return;
   if(message.content.indexOf(miscSettings.prefix) !== 0) return;
@@ -45,12 +47,15 @@ bot.on("message", message => {
 
   // The list of if/else is replaced with those simple 2 lines:
   try {
+
     let commandFile = require(`../commands/${command}.js`);
     commandFile.run(bot, message, args);
+
   } catch (err) {
-		console.log("**EGEM BOT** No file for that command, prolly other system in use.")
+		console.error("**EGEM BOT** No file for that command, prolly other system in use.")
     console.error(err);
   }
+
 });
 
 // Login the bot.
