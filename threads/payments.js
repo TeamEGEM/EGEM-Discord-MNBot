@@ -31,17 +31,6 @@ var con = mysql.createPool({
 
 // Update Node List: Online/Offline and balance
 function getNodes(){ return JSON.parse(fs.readFileSync('./data/nodes.txt'));}
-// List of functions needed.
-// -register (done)
-// -check reg (done)
-// -listnodes (done)
-// -update online/offline (done)
-// -check if online more than X amount of time and has X balance.
-// -keep track of payments / return payment stats based on registered nodes.
-// -find a way to export data for extra stats/functions.
-// -increment balance owed
-// -calculate users balance
-// -send coins
 
 // EtherGem web3
 var web3 = new Web3();
@@ -77,33 +66,57 @@ function sendCoins(address,value,message,name){
 }
 
 const payNodes = function sendPay(){
-  var data = getNodes();
-  var message = "Enjoy the EGEM.";
-  var rowCount = Number(data.length);
-  var pay = Number(1000);
-  var paytime = Number(24);
-  var payInterval = Number(4);
-  var amountTotal = pay/paytime;
-  var amountFinal = amountTotal/payInterval;
-  var amount = amountFinal/rowCount;
-  var total = amount*rowCount;
-  var weiAmount = amount*Math.pow(10,18);
-  Object.keys(data).forEach(function(key) {
-    var row = data[key];
-    var address = row.address;
-    var name = row.userName;
-    var hasCheated = row.hasCheated;
-    var canEarn = row.canEarn;
-    var regTxSent = row.regTxSent;
-    if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
-        console.log("No payment for user.");
-        return;
-    }
-    sendCoins(address,weiAmount,message,name);
+  con.getConnection(function(err, connection) {
+    if (err) throw err; // not connected!
+  connection.query("SELECT * FROM data", function (err, result, fields){
+    if (!result) return message.reply("No Results.");
+    let obj = JSON.stringify(result);
+    let parsed = JSON.parse(obj);
+
+    let data = result;
+    connection.query("SELECT credits FROM data", function (err, res2, fields){
+      if (!result) return message.reply("No Results.");
+          let obj3 = JSON.stringify(res2);
+          let parsed3 = JSON.parse(obj3);
+
+      connection.query("SELECT * FROM settings", function (err, res, fields){
+        if (!result) return message.reply("No Results.");
+        let obj2 = JSON.stringify(res);
+        let parsed2 = JSON.parse(obj2);
+        var pay = parseInt(res[0]['nodesPayment']);
+        var message = "Enjoy the EGEM.";
+
+        //var weiAmount = (Number(pay) + Number(balance));
+        //var weiFinal = Number(weiAmount + balance)
+        //console.log(result)
+        Object.keys(data).forEach(function(key) {
+          var row = data[key];
+          var address = row.address;
+          var userId = row.userId;
+          var name = row.userName;
+          var hasCheated = row.hasCheated;
+          var canEarn = row.canEarn;
+          var regTxSent = row.regTxSent;
+          var balance = row.credits;
+          //console.log(balance)
+          var weiAmount = (Number(pay) + Number(balance));
+          if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
+              console.log("No payment for user.");
+              return;
+          }
+          connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
+
+          //console.log("Payment Sent!. " + Number(weiAmount) + " | " + pay + "||" + balance);
+          //sendCoins(address,weiAmount,message,name);
+        })
+      })
+    })
+    connection.release();
+
   })
-  console.log(rowCount + " | " + amount + " | " + total);
-  //console.log("**PAYMENTS SENT**");
+})
+console.log("**PAYMENTS SENT**");
 };
 setInterval(payNodes,miscSettings.PayDelay);
 
-console.log("*PAYMENTS SYSTEM** is now Online.");
+console.log("*NODE Payment SYSTEM** is now Online.");

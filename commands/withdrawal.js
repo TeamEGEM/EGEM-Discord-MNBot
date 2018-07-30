@@ -20,9 +20,12 @@ var pool = mysql.createPool({
   password: botSettings.mysqlpass,
   database: botSettings.mysqldb
 });
-
+const talkedRecently = new Set();
 exports.run = (client, message, args) => {
-
+  if (talkedRecently.has(message.author.id)) {
+    message.reply("Wait for the cooldown! 120sec.");
+    return;
+  }
   var botAddy = botSettings.address;
   var value = args[0];
   var feeAmount = botSettings.txfee;
@@ -36,14 +39,17 @@ exports.run = (client, message, args) => {
       var newBal = Number(value);
       var x2 = Number(oldBal);
       var x = Number(x2 - z);
-
+      if(isNaN(value)){
+       return message.reply("That is not a valid number, Abuse will result in a cheating flag.");
+      }
       var ly = (newBal).toString(10)
       var y = web3.utils.toWei(ly, 'ether');
       var ifNeg = Math.sign(newBal);
       var balance = Number(x - y);
       //var balanceFinal = (balance*Math.pow(10,18));
+
       if (ifNeg == "-1") {
-        return message.reply("You can't withdrawal a negative amount.");
+        return message.reply("You can't withdrawal a negative amount, Abuse will result in a cheating flag.");
       }
       if (x < y) {
         return message.reply("You don't have enough to withdrawal that amount.");
@@ -87,6 +93,7 @@ exports.run = (client, message, args) => {
               .addField("TX Sent:", "["+hash+"](https://explorer.egem.io/tx/" +hash+ ")")
               message.reply({embed})
               console.log("Withdrawal Processed: " + hash)
+              pool.query("INSERT INTO txdatasent(`hash`,`to`,`value`) values(?,?,?)",[hash,address,value]);
       		} else {
             const embed = new Discord.RichEmbed()
               .setTitle("EGEM Discord Bot.")
@@ -105,6 +112,7 @@ exports.run = (client, message, args) => {
               .addField("TX Sent:", "["+hash+"](https://explorer.egem.io/tx/" +hash+ ")")
               message.reply({embed})
               console.log("Withdrawal Processed: " + hash)
+              pool.query("INSERT INTO txdatasent(`hash`,`to`,`value`) values(?,?,?)",[hash,address,value]);
       		}
 
       	})
@@ -112,7 +120,11 @@ exports.run = (client, message, args) => {
       }
 
       sendCoins(address,y,message,name);
-
+      talkedRecently.add(message.author.id);
+      setTimeout(() => {
+        // Removes the user from the set after 2.5 seconds
+        talkedRecently.delete(message.author.id);
+      }, 120000);
     })
 
 

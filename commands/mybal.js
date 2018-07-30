@@ -21,24 +21,11 @@ var con = mysql.createPool({
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
 
-let commandcooldown = new Set();
+const talkedRecently = new Set();
 
 exports.run = (client, message, args) => {
-  if(commandcooldown.has(message.author.id)) {
-  const embed = new Discord.RichEmbed()
-    .setTitle("EGEM Discord Bot.")
-    .setAuthor("TheEGEMBot", miscSettings.egemspin)
-
-    .setColor(miscSettings.warningcolor)
-    .setDescription("Command Delay Check:")
-    .setFooter(miscSettings.footerBranding, miscSettings.img32x32)
-    .setThumbnail(miscSettings.img32shard)
-
-    .setTimestamp()
-    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
-    .addField("You need to wait 1 min.", "Thank you.")
-
-    message.channel.send({embed})
+  if (talkedRecently.has(message.author.id)) {
+    message.reply("Wait for the cooldown! 120sec.");
     return;
   }
   var user = message.author.username;
@@ -76,12 +63,17 @@ exports.run = (client, message, args) => {
               if(!error) {
                 var amount2 = response["BALANCE"];
                 //return message.reply("you have " + amount2 + " EGEM (LIVE) | " + amount + " EGEM (DB)" + " | Cheated: " + hasCheated + " | Earning: " + canEarn);
+                talkedRecently.add(message.author.id);
+                setTimeout(() => {
+                  // Removes the user from the set after 2.5 seconds
+                  talkedRecently.delete(message.author.id);
+                }, 120000);
                 const embed = new Discord.RichEmbed()
                   .setTitle("EGEM Discord Bot.")
                   .setAuthor("TheEGEMBot", miscSettings.egemspin)
 
                   .setColor(miscSettings.okcolor)
-                  .setDescription("EGEM Address Update:")
+                  .setDescription("EGEM User Status Info:")
                   .setFooter(miscSettings.footerBranding, miscSettings.img32x32)
                   .setThumbnail(miscSettings.img32shard)
 
@@ -94,16 +86,11 @@ exports.run = (client, message, args) => {
                   .addField("LIVE BALANCE: ", amount2, true)
                   .addField("DB BALANCE: ", amount, true)
                   .addField("Credits: ", creditsT, true)
-                  .addField("Node Pay: ", nodePayNumFinal, true)
+                  .addField("Node Pay: ", "Use /stats to see.", true)
                   .addField("Node is: ", isOnline, true)
                   .addField("Node Earning: ", canEarn, true)
 
-                  return message.channel.send({embed});
-                  commandcooldown.add(message.author.id);
-                  setTimeout(() => {
-                    // Removes the user from the set after a minute
-                    commandcooldown.delete(message.author.id);
-                  }, miscSettings.cmddelay);
+                  return message.reply({embed});
               } else {
                 console.log(error);
               }

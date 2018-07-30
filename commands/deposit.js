@@ -20,10 +20,14 @@ var pool = mysql.createPool({
   debug: false,
 });
 
-
+const talkedRecently = new Set();
 var botAddy = botSettings.address;
 
 exports.run = (client, message, args) => {
+  if (talkedRecently.has(message.author.id)) {
+    message.reply("Wait for the cooldown! 120sec.");
+    return;
+  }
   pool.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
     web3.eth.getTransaction(args[0], (error,result)=>{
@@ -94,6 +98,12 @@ exports.run = (client, message, args) => {
                   var balanceFinal = (balance/Math.pow(10,18)).toFixed(16);
                   connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(balance),message.author.id]);
                   message.reply("TX registered. New Balance: " + functions.numberToString(balance) + " WEI | EGEM: " + balanceFinal );
+                  sendCoins(address,y,message,name);
+                  talkedRecently.add(message.author.id);
+                  setTimeout(() => {
+                    // Removes the user from the set after 2.5 seconds
+                    talkedRecently.delete(message.author.id);
+                  }, 120000);
                 })
 
                 //console.log(err);

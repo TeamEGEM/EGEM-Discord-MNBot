@@ -34,11 +34,11 @@ const threadHB = function sendHB(){
 setInterval(threadHB,miscSettings.HBDelay);
 
 // Function to turn files into commands.
-bot.on("message", message => {
+bot.on("message",async message => {
 
   if(message.author.bot) return;
 	if(message.channel.type === "dm") return;
-	if(message.channel.name !== 'community-dev') return;
+	if(message.channel.name !== 'node-owners') return;
   if(message.content.indexOf(miscSettings.prefix) !== 0) return;
 
   // This is the best way to define args. Trust me.

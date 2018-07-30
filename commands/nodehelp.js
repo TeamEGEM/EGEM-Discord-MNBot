@@ -3,7 +3,12 @@ const botSettings = require("../configs/config.json");
 const miscSettings = require("../configs/settings.json");
 const botChans = require("../configs/botchans.json");
 const prefix = miscSettings.prefix;
+const talkedRecently = new Set();
 exports.run = (client, message, args) => {
+  if (talkedRecently.has(message.author.id)) {
+    message.reply("Wait for the cooldown! 120sec.");
+    return;
+  }
   const embed = new Discord.RichEmbed()
     .setTitle("EGEM Discord Bot.")
     .setAuthor("TheEGEMBot", miscSettings.egemspin)
@@ -17,12 +22,22 @@ exports.run = (client, message, args) => {
     .setURL("https://github.com/TeamEGEM/EGEM-Bot")
     .addField(prefix+"listnodes", "shows the list of nodes. (ADMINS ONLY)")
     .addField(prefix+"flagcheater", "self explanatory. (ADMINS ONLY)")
-    .addField(prefix+"nodereg <egemaddress> <ip>", "register node.")
-    .addField(prefix+"nodestats", "shows the status of nodes.")
+    .addField(prefix+"botreg <egemaddress>", "register with the bot.")
+    .addField(prefix+"stats", "shows the status of nodes.")
     .addField(prefix+"change0x <egemaddress>", "change address of your node/registration.")
     .addField(prefix+"changeip <ip>", "change ip of your node/registration.")
+    .addField(prefix+"mybal", "check your own balances.")
     .addField(prefix+"balance <egemaddress>", "check a users balance.")
-    .addField(prefix+"mybal", "check own balance.")
+    .addField(prefix+"deposit <transactionHash>", "deposit to credits.")
+    .addField(prefix+"withdrawal <value>", "claim earned balance.")
+    .addField(prefix+"xfer <discordid> <value>", "send/tip an amount to a user.")
+    .addField(prefix+"toHex <value>", "encode a message to hex format.")
+    .addField(prefix+"fromHex <value>", "decode a message from hex format.")
 
-    message.channel.send({embed})
+    message.reply({embed})
+    talkedRecently.add(message.author.id);
+    setTimeout(() => {
+      // Removes the user from the set after 2.5 seconds
+      talkedRecently.delete(message.author.id);
+    }, 120000);
 }

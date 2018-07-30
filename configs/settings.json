@@ -10,6 +10,7 @@
   "HBDelay": "120000",
 	"NodeDelay": "120000",
 	"PayDelay": "900000",
+	"nOnDelay": "60000",
 	"txgas": "120000",
 	"cmddelay": "60000",
   "warningcolor": "0xFF0000",
