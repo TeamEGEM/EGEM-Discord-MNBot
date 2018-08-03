@@ -45,17 +45,24 @@ exports.run = (client, message, args) => {
           .setURL("https://github.com/TeamEGEM/EGEM-Bot")
           .addField("Game is: ", rollGame)
           connection.release();
+          talkedRecently.add(message.author.id);
+          setTimeout(() => {
+            // Removes the user from the set after 2.5 seconds
+            talkedRecently.delete(message.author.id);
+          }, 120000);
           return message.reply({embed})
 
       }
-        // if (bet == null) {
-        //   return message.reply("free roll "+ roll)
-        // }
         if(isNaN(bet)){
           connection.release();
+          talkedRecently.add(message.author.id);
+          setTimeout(() => {
+            // Removes the user from the set after 2.5 seconds
+            talkedRecently.delete(message.author.id);
+          }, 120000);
           return message.reply("free roll "+ roll)
         }
-        message.reply("nonfree roll "+ roll)
+        message.reply("non free roll "+ roll)
         connection.release();
       } catch (e) {
         console.log(e);
