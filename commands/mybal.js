@@ -58,7 +58,7 @@ exports.run = (client, message, args) => {
         if (authorCheck == author) {
           if (author == authorCheck) {
             connection.release();
-            console.log(obj);
+            //console.log(obj);
             var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + address, function(error, response){
               if(!error) {
                 var amount2 = response["BALANCE"];
@@ -83,9 +83,9 @@ exports.run = (client, message, args) => {
                   .addField("Registered Node IP: ", ip)
                   .addField("Registration Completed: ", regTxSent, true)
                   .addField("Flagged for Cheating: ", hasCheated, true)
-                  .addField("LIVE BALANCE: ", amount2, true)
-                  .addField("DB BALANCE: ", amount, true)
-                  .addField("Credits: ", creditsT, true)
+                  .addField("LIVE BALANCE: ", "💳 = "+amount2, true)
+                  .addField("DB BALANCE: ", "💳 = "+amount, true)
+                  .addField("Credits: ", "💰 = "+creditsT, true)
                   .addField("Node Pay: ", "Use /stats to see.", true)
                   .addField("Node is: ", isOnline, true)
                   .addField("Node Earning: ", canEarn, true)

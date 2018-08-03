@@ -20,8 +20,6 @@ exports.run = (client, message, args) => {
 
     .setTimestamp()
     .setURL("https://github.com/TeamEGEM/EGEM-Bot")
-    .addField(prefix+"listnodes", "shows the list of nodes. (ADMINS ONLY)")
-    .addField(prefix+"flagcheater", "self explanatory. (ADMINS ONLY)")
     .addField(prefix+"botreg <egemaddress>", "register with the bot.")
     .addField(prefix+"stats", "shows the status of nodes.")
     .addField(prefix+"change0x <egemaddress>", "change address of your node/registration.")
@@ -33,6 +31,7 @@ exports.run = (client, message, args) => {
     .addField(prefix+"xfer <discordid> <value>", "send/tip an amount to a user.")
     .addField(prefix+"toHex <value>", "encode a message to hex format.")
     .addField(prefix+"fromHex <value>", "decode a message from hex format.")
+    .addField(prefix+"adminhelp", "commands for admins only.")
 
     message.reply({embed})
     talkedRecently.add(message.author.id);

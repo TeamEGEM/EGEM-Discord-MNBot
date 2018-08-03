@@ -36,12 +36,18 @@ exports.run = (client, message, args) => {
           var payAmount = obj[0]['nodesPayment'];
           var totalCredits = obj[0]['totalCredits'];
           var dailyPayTotal = obj[0]['dailyPayTotal'];
-
+          var dailyPay24hU = (Number(payAmount/Math.pow(10,18)) * Number(4));
+          var dailyPay24hUTotal = (Number(dailyPay24hU) * Number(24));
           connection.query("SELECT COUNT(userId) AS totalUsers FROM data", function (err, res) {
             if (err) return message.reply("No Results.");
             var parsed2 = JSON.stringify(res);
             var obj2 = JSON.parse(parsed2);
             var totalUsers = obj2[0]['totalUsers'];
+            connection.query("SELECT SUM(value) AS totalWithdrawn FROM txdatasent", function (err, res2) {
+              if (err) return message.reply("No Results.");
+              var parsed3 = JSON.stringify(res2);
+              var obj3 = JSON.parse(parsed3);
+              var totalWithdrawn = obj3[0]['totalWithdrawn'];
             const embed = new Discord.RichEmbed()
               .setTitle("EGEM Discord Bot.")
               .setAuthor("TheEGEMBot", miscSettings.egemspin)
@@ -54,15 +60,19 @@ exports.run = (client, message, args) => {
               .setTimestamp()
               .setURL("https://github.com/TeamEGEM/EGEM-Bot")
               .addField("Bot Address: ", address)
-              .addField("Quarry Balance: ", "💳 - "+amount + " EGEM.")
-              .addField("All Credits In Database: ", "💳 - "+totalCredits/Math.pow(10,18) + " EGEM.")
-              .addField("Current Nodes Online: ", "✅ - "+nodesData)
-              .addField("Total Registered: ", "👥 - "+totalUsers+ " users in Database.")
-              .addField("15min Payments Per Node: ", "⛏ - "+functions.numberToString(payAmount/Math.pow(10,18)) + " EGEM.")
-              .addField("Total Created Every 24 Hours: ", "💰 - "+dailyPayTotal+ " EGEM")
+              .addField("Quarry Balance: ", "💳 = "+amount + " EGEM.",true)
+              .addField("Total Distributed Every 24 Hours: ", "💰 = "+dailyPayTotal+ " EGEM",true)
+              .addField("All Credits In Database: ", "💳 = "+totalCredits/Math.pow(10,18) + " EGEM.",true)
+              .addField("Total Credits Withdrawn: ", "💳 = "+totalWithdrawn/Math.pow(10,18) + " EGEM.",true)
+              .addField("Total Users Registered: ", "👥 = "+totalUsers+ " users in Database.",true)
+              .addField("Current Nodes Online: ", "✅ = "+nodesData,true)
+              .addField("15min Pay Per Node: ", "⛏ = "+functions.numberToString(payAmount/Math.pow(10,18)) + " EGEM.",true)
+              .addField("Current 24h/Pay Per Node: ", "⛏ = "+dailyPay24hUTotal,true)
+              .addField("ATTENTION: ", "Due to the way the system works the above stats will change and update depending on certain variables, and will never be the same for very long.")
 
               connection.release();
               return message.reply({embed});
+            })
           })
 
 
