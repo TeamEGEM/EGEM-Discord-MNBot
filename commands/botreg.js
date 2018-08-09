@@ -19,13 +19,16 @@ var con = mysql.createPool({
 });
 
 exports.run = (client, message, args) => {
-
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   let address = args[0];
   let ip = "192.168.1.66";
   let balance = "0";
   let isOnline = "Offline";
   let author = message.author.id;
   let user = message.author.username;
+  if (address == null) {
+    return message.reply("Please add your address when registering.")
+  }
   con.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
     connection.query("SELECT userId FROM data WHERE userId = ?", author, function (err, result) {
@@ -46,7 +49,7 @@ exports.run = (client, message, args) => {
       }
 
       connection.query('INSERT INTO data (userId, userName, balance, address, ip, isOnline) VALUES (?, ?, ?, ?, ?, ?)', [author, user, balance, address, ip, isOnline]);
-      message.reply("You have been added to the database.");
+      message.reply("You have been added to the database, you can now use /mybal to see more info.");
       // When done with the connection, release it.
       connection.release();
 

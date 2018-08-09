@@ -13,7 +13,7 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 var async = require("async");
 var functions = require('../func/main.js');
-
+require('console-color-mr');
 
 
 const botSettings = require("../configs/config.json");
@@ -76,14 +76,15 @@ const payNodes = function sendPay(){
     let data = result;
     connection.query("SELECT credits FROM data", function (err, res2, fields){
       if (!result) return message.reply("No Results.");
-          let obj3 = JSON.stringify(res2);
-          let parsed3 = JSON.parse(obj3);
+      let obj3 = JSON.stringify(res2);
+      let parsed3 = JSON.parse(obj3);
 
       connection.query("SELECT * FROM settings", function (err, res, fields){
         if (!result) return message.reply("No Results.");
         let obj2 = JSON.stringify(res);
         let parsed2 = JSON.parse(obj2);
-        var pay = parseInt(res[0]['nodesPayment']);
+        let basePay = parseInt(res[0]['nodesPayment']);
+        let bonusPay = parseInt(res[0]['nodesPaymentBonus']);
         var message = "Enjoy the EGEM.";
 
         //var weiAmount = (Number(pay) + Number(balance));
@@ -96,15 +97,47 @@ const payNodes = function sendPay(){
           var name = row.userName;
           var hasCheated = row.hasCheated;
           var canEarn = row.canEarn;
+          var canEarn2 = row.canEarn2;
           var regTxSent = row.regTxSent;
           var balance = row.credits;
-          //console.log(balance)
-          var weiAmount = (Number(pay) + Number(balance));
-          if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
-              console.log("No payment for user.");
-              return;
+          var nodeBonusPay = row.nodeBonusPay;
+          if (nodeBonusPay !== "0") {
+            let pay = (Number(basePay) + Number(bonusPay));
+            var weiAmount = (Number(pay) + Number(balance));
+            if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
+                //console.log("No payment for user.");
+                return;
+            }
+            connection.query(`UPDATE data SET myPay =? WHERE userId = ?`, [functions.numberToString(pay),userId]);
+            connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
+          } else if (row.betaTester !== "No") {
+            let pay = (Number(basePay) * Number(3));
+            var weiAmount = (Number(pay) + Number(balance));
+            if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
+                //console.log("No payment for user.");
+                return;
+            }
+            connection.query(`UPDATE data SET myPay =? WHERE userId = ?`, [functions.numberToString(pay),userId]);
+            connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
+          } else {
+            let pay = parseInt(res[0]['nodesPayment']);
+            var weiAmount = (Number(pay) + Number(balance));
+            if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
+                //console.log("No payment for user.");
+                return;
+            }
+            connection.query(`UPDATE data SET myPay =? WHERE userId = ?`, [functions.numberToString(pay),userId]);
+            connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
           }
-          connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
+
+
+          //console.log(balance)
+          // var weiAmount = (Number(pay) + Number(balance));
+          // if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
+          //     //console.log("No payment for user.");
+          //     return;
+          // }
+          // connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
 
           //console.log("Payment Sent!. " + Number(weiAmount) + " | " + pay + "||" + balance);
           //sendCoins(address,weiAmount,message,name);
@@ -115,7 +148,7 @@ const payNodes = function sendPay(){
 
   })
 })
-console.log("**PAYMENTS SENT**");
+console.info("**PAYMENTS SENT**");
 };
 setInterval(payNodes,miscSettings.PayDelay);
 

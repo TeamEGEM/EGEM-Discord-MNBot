@@ -5,9 +5,6 @@ const botChans = require("../configs/botchans.json");
 const prefix = miscSettings.prefix;
 const talkedRecently = new Set();
 exports.run = (client, message, args) => {
-  if(!message.member.hasPermission('ADMINISTRATOR')){
-    return message.channel.send("You cannot use '/adminhelp' command");
-  }
   if (talkedRecently.has(message.author.id)) {
     message.reply("Wait for the cooldown! 120sec.");
     return;
@@ -23,17 +20,7 @@ exports.run = (client, message, args) => {
 
     .setTimestamp()
     .setURL("https://github.com/TeamEGEM/EGEM-Bot")
-    .addField(prefix+"listnodes", "shows the list of nodes.")
-    .addField(prefix+"flagcheater <userid> Yes/No", "self explanatory.")
-    .addField(prefix+"setreg <userid> Yes/No", "self explanatory.")
-    .addField(prefix+"setbeta <userid> Yes/No", "self explanatory.")
-    .addField(prefix+"setdailypri <value>", "self explanatory.")
-    .addField(prefix+"setdailysec <value>", "self explanatory.")
-    .addField(prefix+"setcheck <userid> Yes/No", "self explanatory.")
-    .addField(prefix+"setroll Online/Offline", "self explanatory.")
-    .addField(prefix+"setbj Online/Offline", "self explanatory.")
-    .addField(prefix+"settimetrial Online/Offline", "self explanatory.")
-    .addField(prefix+"setriskit Online/Offline", "self explanatory.")
+    .addField(prefix+"rollhelp", "learn how to play the new roll game.")
 
     message.reply({embed})
     talkedRecently.add(message.author.id);

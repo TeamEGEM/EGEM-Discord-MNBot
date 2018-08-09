@@ -21,9 +21,10 @@ var pool = mysql.createPool({
 });
 
 const talkedRecently = new Set();
-var botAddy = botSettings.address;
+var botAddy = web3.utils.toChecksumAddress(botSettings.address);
 
 exports.run = (client, message, args) => {
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   if (talkedRecently.has(message.author.id)) {
     message.reply("Wait for the cooldown! 120sec.");
     return;
@@ -68,7 +69,7 @@ exports.run = (client, message, args) => {
     let valueStr = valueRaw;
 
     console.log(toStr);
-    if (toStr !== botAddy) {
+    if (web3.utils.toChecksumAddress(toStr) !== botAddy) {
       return message.reply("You can't claim a transaction that was not sent to the bot.");
     }
 
@@ -78,7 +79,7 @@ exports.run = (client, message, args) => {
       var obj = JSON.parse(parsed);
       //console.log(obj[0]['address']);
       var userAddy = obj[0]['address'];
-      if (fromStr !== userAddy) {
+      if (web3.utils.toChecksumAddress(fromStr) !== web3.utils.toChecksumAddress(userAddy)) {
         return message.reply("You have to send from your registered address to deposit.");
       }
       pool.query("SELECT * FROM txdata WHERE hash = ?", hash, function (err, result) {
@@ -98,7 +99,7 @@ exports.run = (client, message, args) => {
                   var balanceFinal = (balance/Math.pow(10,18)).toFixed(16);
                   connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(balance),message.author.id]);
                   message.reply("TX registered. New Balance: " + functions.numberToString(balance) + " WEI | EGEM: " + balanceFinal );
-                  sendCoins(address,y,message,name);
+                  //sendCoins(address,y,message,name);
                   talkedRecently.add(message.author.id);
                   setTimeout(() => {
                     // Removes the user from the set after 2.5 seconds

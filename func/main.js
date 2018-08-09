@@ -83,9 +83,20 @@ function numberToString(num){
     return numStr;
 }
 
+async function returnEGEMbal(address) {
+  let addressBal = address;
+  var balanceIs = await getJSON('https://api.egem.io/api/v1/balances/?address=' + addressBal, function(error, response){
+    if(!error) {
+      let balance = response["BALANCE"];
+      return balance;
+    }
+  })
+}
+
 // exports the variables and functions above so that other modules can use them
 module.exports.getData = getData;
 module.exports.myFunc = myFunc;
 module.exports.getStats = getStats;
 module.exports.getNodes = getNodes;
 module.exports.numberToString = numberToString;
+module.exports.returnEGEMbal = returnEGEMbal;

@@ -25,7 +25,7 @@ exports.run = (client, message, args) => {
   con.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
     connection.query("SELECT rollGame FROM settings WHERE id='1'", function (err, result) {
-      if (!result) return message.reply("User Not Registered.");
+      if (!result) return message.reply("User Not registered, use /botreg <address>.");
       let parsed = JSON.stringify(result);
       let obj = JSON.parse(parsed);
       var rollGame = obj[0]['rollGame'];

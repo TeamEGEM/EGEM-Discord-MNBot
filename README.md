@@ -1,1 +1,7 @@
-# Secret-Project
+# Discord Quarry Nodes & Associated Systems.
+
+This system is completely voluntary.
+
+I will not help you set this up.
+
+DO NOT ASK!

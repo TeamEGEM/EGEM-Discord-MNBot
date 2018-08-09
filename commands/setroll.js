@@ -22,7 +22,7 @@ exports.run = (client, message, args) => {
     if (err) throw err; // not connected!
     const response = args[0];
     connection.query("SELECT * FROM data WHERE userId = ?", message.author.id, function (err, result) {
-      if (!result) return message.reply("User Not Registered.");
+      if (!result) return message.reply("User Not registered, use /botreg <address>.");
       try {
         connection.query(`UPDATE settings SET rollGame = ?`, response);
         console.log("data updated");

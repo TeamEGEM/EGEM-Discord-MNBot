@@ -23,7 +23,7 @@ exports.run = (client, message, args) => {
     const author = args[0];
     const hasCheated = args[1];
     connection.query("SELECT * FROM data WHERE userId = ?", author, function (err, result) {
-      if (!result) return message.reply("User Not Registered.");
+      if (!result) return message.reply("User Not registered, use /botreg <address>.");
       let parsed = JSON.stringify(result);
       let obj = JSON.parse(parsed);
       connection.query(`UPDATE data SET hasCheated = ? WHERE userId = ?`, [hasCheated, author]);

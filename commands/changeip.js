@@ -15,13 +15,13 @@ var con = mysql.createPool({
 });
 
 exports.run = (client, message, args) => {
-
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   con.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
     const author = message.author.id;
     const ip = args[0];
     connection.query("SELECT * FROM data WHERE userId = ?", author, function (err, result) {
-      if (!result) return message.reply("User Not Registered.");
+      if (!result) return message.reply("User Not registered, use /botreg <address>.");
       let parsed = JSON.stringify(result);
       let obj = JSON.parse(parsed);
       connection.query(`UPDATE data SET ip = ? WHERE userId = ?`, [ip, author]);
@@ -37,7 +37,7 @@ exports.run = (client, message, args) => {
 
         .setTimestamp()
         .setURL("https://github.com/TeamEGEM/EGEM-Bot")
-        .addField("User has updated there IP to: ", ip)
+        .addField("User has updated their IP to: ", ip)
 
         message.channel.send({embed})
       connection.release();

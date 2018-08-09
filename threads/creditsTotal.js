@@ -41,7 +41,6 @@ const threadHB = function sendHB(){
 setInterval(threadHB,miscSettings.HBDelay);
 
 
-
 const updateNodes = function upN(){
   pool.getConnection(function(err, connection) {
     pool.query("SELECT SUM(credits) AS 'credits' FROM data",function (err, result) {

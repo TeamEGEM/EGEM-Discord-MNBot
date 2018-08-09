@@ -38,7 +38,6 @@ exports.run = (client, message, args) => {
           var payAmount = obj[0]['nodesPayment'];
           var payAmountBonus = obj[0]['nodesPaymentBonus'];
           var totalCredits = obj[0]['totalCredits'];
-          var totalDeposits = obj[0]['totalDeposits'];
           var totalPay15 = obj[0]['totalPay15'];
           var dailyPayTotal = obj[0]['dailyPayTotal'];
           var dailyPayBonusTotal = obj[0]['dailyPayBonusTotal'];
@@ -74,13 +73,14 @@ exports.run = (client, message, args) => {
 
                   .setTimestamp()
                   .setURL("https://github.com/TeamEGEM/EGEM-Bot")
-                  .addField("Deposit Address:", "["+address+"](https://explorer.egem.io/addr/" +address+ ")")
-                  .addField("Quarry Balance:", ":moneybag: = "+amount + " EGEM.")
-                  .addField("Total Users Registered  |  Nodes Online  |  Estimated EGEM Locked:", "👥 = "+totalUsers+ " users in Database."+"  |  "+"✅ = "+nodesData3+" :moneybag: = "+Number(totalLocked).toFixed(0) + " EGEM.")
-                  .addField("All Credits In Database:", ":moneybag: = "+totalCredits/Math.pow(10,18) + " EGEM.")
-                  .addField("Total Credits Withdrawn:", "💳 = "+totalWithdrawn/Math.pow(10,18) + " EGEM.")
-                  .addField("Total Credit Deposits:", "💳 = "+totalDeposits/Math.pow(10,18) + " EGEM.")
-                  .addField("ATTENTION: ", "Please use /paystats to see node rewards and info.")
+                  .addField("Primary 24h Share:", "💰 = "+dailyPayTotal+ " EGEM",true)
+                  .addField("Secondary 24h Share:", "💰 = "+dailyPayBonusTotal+ " EGEM",true)
+                  .addField("Pri. Nodes Online  |  10,000c | Sec. Nodes Online  |  30,000c:", "✅ = "+nodesData+" -----|----- "+"✅ = "+nodesData2)
+                  .addField("Pri. 15min Per Node  |  Sec. 15min Per Node:", "⛏ = "+functions.numberToString(payAmount/Math.pow(10,18)) + " EGEM."+"  |  "+"⛏ = "+functions.numberToString(payAmountBonus/Math.pow(10,18)) + " EGEM.")
+                  .addField("Primary 24h/Pay Per Node  |  Secondary 24h/Pay Per Node:", "⛏ = "+dailyPay24hUTotal+"  |  "+"⛏ = "+dailyPay24hUTotal2)
+                  .addField("Estimated Actual For All Nodes:", "✅ = "+(totalPay15/Math.pow(10,18))+ " EGEM per 15min.")
+                  .addField("Estimated Actual 24h:", "✅ = "+(totalPay24/Math.pow(10,18))+ " EGEM per 24hours, includes beta users.")
+                  .addField("ATTENTION: ", "Due to the way the system works the above stats will change and update depending on certain variables, and will never be the same for very long.")
 
                   connection.release();
                   return message.reply({embed});

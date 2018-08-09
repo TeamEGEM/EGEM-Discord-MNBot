@@ -23,6 +23,7 @@ web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
 
 
 exports.run = (client, message, args) => {
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   if (talkedRecently.has(message.author.id)) {
     message.reply("Wait for the cooldown! 120sec.");
     return;
@@ -75,7 +76,7 @@ exports.run = (client, message, args) => {
             var slot = obj3[0]["userId"]
             console.log(slot);
           } catch (e) {
-            return message.reply("User Not Registered.");
+            return message.reply("User Not registered, use /botreg <address>.");
           }
         })
         // update sender balance
@@ -124,7 +125,7 @@ exports.run = (client, message, args) => {
       }catch(e){
         console.log("ERROR ::",e)
         connection.release();
-        return message.reply("Not registered.");
+        return message.reply("Not registered, use /botreg <address>.");
       }
 
     })

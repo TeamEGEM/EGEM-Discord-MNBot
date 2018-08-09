@@ -6,7 +6,11 @@ const prefix = miscSettings.prefix;
 var getJSON = require('get-json');
 
 exports.run = (client, message, args) => {
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   var address = args[0];
+  if (address == null) {
+    return message.reply("Please enter a valid EGEM address to lookup.")
+  }
   var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + address, function(error, response){
     if(!error) {
       let amount = response["BALANCE"];

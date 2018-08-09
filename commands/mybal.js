@@ -45,16 +45,18 @@ exports.run = (client, message, args) => {
         let hasCheated = obj[0]["hasCheated"];
         let regTxSent = obj[0]["regTxSent"];
         let isOnline = obj[0]["isOnline"];
+        let isOnline2 = obj[0]["isOnline2"];
         let creditsRaw = obj[0]["credits"];
+        let betaTester = obj[0]["betaTester"];
         var BN = web3.utils.BN;
         let creditsBN = new BN(creditsRaw).toString();
         let creditsT = web3.utils.fromWei(creditsBN, 'ether');
         var credits = (creditsT/Math.pow(10,18)).toFixed(16);
-        let nodePay = obj[0]["nodePay"];
-        var nodePayNum1 = parseInt(nodePay);
-        var nodePayNum2 = Number(nodePayNum1);
-        var nodePayNumFinal = (nodePayNum2/Math.pow(10,18)).toFixed(8);
+        let nodeBonusPay = obj[0]["nodeBonusPay"];
+        let numberOfWD = obj[0]["numberOfWD"];
+        let myPay = obj[0]["myPay"];
         let ip = obj[0]["ip"];
+        let ip2 = obj[0]["ip2"];
         if (authorCheck == author) {
           if (author == authorCheck) {
             connection.release();
@@ -68,6 +70,13 @@ exports.run = (client, message, args) => {
                   // Removes the user from the set after 2.5 seconds
                   talkedRecently.delete(message.author.id);
                 }, 120000);
+                if (betaTester == "Yes") {
+                  var theflag = "Beta Tester:"
+                  var themsg = "Thank you for helping at the start!"
+                } else {
+                  var theflag = "Normal User:"
+                  var themsg = "Thank you for signing up!"
+                }
                 const embed = new Discord.RichEmbed()
                   .setTitle("EGEM Discord Bot.")
                   .setAuthor("TheEGEMBot", miscSettings.egemspin)
@@ -79,17 +88,18 @@ exports.run = (client, message, args) => {
 
                   .setTimestamp()
                   .setURL("https://github.com/TeamEGEM/EGEM-Bot")
-                  .addField("Registered Node Address: ", address)
-                  .addField("Registered Node IP: ", ip)
-                  .addField("Registration Completed: ", regTxSent, true)
+                  .addField("Registered Address:", "["+address+"](https://explorer.egem.io/addr/" +address+ ")")
+                  .addField("Quarry #1 IP: ", ip+" is "+ isOnline, true)
+                  .addField("Quarry #2 IP: ", ip2+" is "+ isOnline2, true)
+                  .addField("Quarry Registered: ", regTxSent, true)
                   .addField("Flagged for Cheating: ", hasCheated, true)
-                  .addField("LIVE BALANCE: ", "💳 = "+amount2, true)
-                  .addField("DB BALANCE: ", "💳 = "+amount, true)
-                  .addField("Credits: ", "💰 = "+creditsT, true)
-                  .addField("Node Pay: ", "Use /stats to see.", true)
-                  .addField("Node is: ", isOnline, true)
-                  .addField("Node Earning: ", canEarn, true)
-
+                  .addField("EGEM Balance: ", "💳 = "+amount2+ " EGEM.")
+                  .addField("Number Of Withdrawals: ", numberOfWD, true)
+                  .addField("Nodes Earning: ", canEarn, true)
+                  .addField("Node Bonus: ", nodeBonusPay, true)
+                  .addField(theflag, themsg)
+                  .addField("Last Node Pay: ", (myPay/Math.pow(10,18))+ " EGEM.")
+                  .addField("EGEM Credits: ", "💰 = "+creditsT+ " EGEM.")
                   return message.reply({embed});
               } else {
                 console.log(error);
@@ -101,7 +111,7 @@ exports.run = (client, message, args) => {
       }catch(e){
         console.log("ERROR ::",e)
         connection.release();
-        return message.reply("Not registered.");
+        return message.reply("Not registered, use /botreg <address>.");
       }
     })
   })

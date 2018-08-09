@@ -23,15 +23,15 @@ exports.run = (client, message, args) => {
   if(!message.member.hasPermission('ADMINISTRATOR')){
     return message.channel.send("You cannot use '/adminhelp' command");
   }
-  con.getConnection(function(err, connection) {
-    connection.query("SELECT * FROM data", function (err, result, fields){
-      if (!result) return message.reply("No Results.");
-      Object.keys(result).forEach(function(key) {
-        var row = result[key];
-        message.channel.send(" Name: " + row.userName + " | Address: " + row.address + " | UserID: " + row.userId + " | Status: " + row.isOnline);
-      });
-      connection.release();
-    });
-  });
+  // con.getConnection(function(err, connection) {
+  //   connection.query("SELECT * FROM data", function (err, result, fields){
+  //     if (!result) return message.reply("No Results.");
+  //     Object.keys(result).forEach(function(key) {
+  //       var row = result[key];
+  //       message.channel.send(" Name: " + row.userName + " | Address: " + row.address + " | UserID: " + row.userId + " | Status: " + row.isOnline);
+  //     });
+  //     connection.release();
+  //   });
+  // });
 
 }
