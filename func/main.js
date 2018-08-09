@@ -19,40 +19,6 @@ const botChans = require("../configs/botchans.json");
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
 
-
-var con = mysql.createPool({
-  connectionLimit : 25,
-  host: botSettings.mysqlip,
-  user: botSettings.mysqluser,
-  password: botSettings.mysqlpass,
-  database: botSettings.mysqldb
-});
-
-// returns data
-function getData() {
-  return JSON.parse(fs.readFileSync('./data/nodes.txt'));
-}
-
-function getStats(address, balance)
-{
-
-  const makeRequest = async () => {
-    let balQ = await web3.eth.getBalance(address)/Math.pow(10,18);
-    //console.log("Address " + address + " has " + balQ );
-
-  }
-  makeRequest()
-}
-function myFunc(callback, args)
-{
-    //do stuff
-    //...
-    //execute callback when finished
-    callback.apply(this, args);
-}
-
-function getNodes(){ return JSON.parse(fs.readFileSync('./data/nodes.txt'));};
-
 // Number to string work around for bignumber and scientific-notation.
 function numberToString(num){
     let numStr = String(num);
@@ -83,20 +49,5 @@ function numberToString(num){
     return numStr;
 }
 
-async function returnEGEMbal(address) {
-  let addressBal = address;
-  var balanceIs = await getJSON('https://api.egem.io/api/v1/balances/?address=' + addressBal, function(error, response){
-    if(!error) {
-      let balance = response["BALANCE"];
-      return balance;
-    }
-  })
-}
-
 // exports the variables and functions above so that other modules can use them
-module.exports.getData = getData;
-module.exports.myFunc = myFunc;
-module.exports.getStats = getStats;
-module.exports.getNodes = getNodes;
 module.exports.numberToString = numberToString;
-module.exports.returnEGEMbal = returnEGEMbal;
