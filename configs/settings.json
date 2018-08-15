@@ -15,14 +15,17 @@
 	"PayDelay": "900000",
 	"CountDelay": "90000",
 	"nOnDelay": "60000",
-	"WDDelay": "3000",
+	"WDDelay": "120000",
 	"txgas": "120000",
 	"cmddelay": "60000",
   	"warningcolor": "0xFF0000",
   	"okcolor": "0x00AE86",
   	"egemcolor": "0x00E5FF",
-  	"img32x32": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/32x32.png",
-  	"img32shard": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/various/32.png",
-  	"egemspin":  "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/animated/egem_gray_28.gif",
-  	"dice32": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/dice32.png"
+		"img32x32": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/32x32.png",
+	  "img32shard": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/various/32.png",
+		"egemspin":  "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/animated/egem_gray_28.gif",
+		"dice32": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/dice32.png",
+		"coinbag": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/coinbag32.png",
+		"stopwatch": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/stopwatch.png",
+		"blackjack": "https://raw.githubusercontent.com/TeamEGEM/meta/master/images/blackjack32.png"
 }
