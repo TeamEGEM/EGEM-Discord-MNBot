@@ -49,5 +49,12 @@ function numberToString(num){
     return numStr;
 }
 
+async function getBalance(address){
+  let balance = await web3.eth.getBalance(address);
+
+  return balance;
+}
+
 // exports the variables and functions above so that other modules can use them
 module.exports.numberToString = numberToString;
+module.exports.getBalance = getBalance;
