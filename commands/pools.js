@@ -22,6 +22,7 @@ exports.run = (client, message, args) => {
     .addField("Clona.ru SOLO POOL", "http://clona.ru/")
     .addField("CUBEPOOL.EU", "https://egem.cubepool.eu/")
     .addField("PoolFun Multi", "http://poolfun.ru/")
+    .addField("Saiyan Mining", "https://egem.saiyanmining.club/")
 
     message.channel.send({embed})
 }

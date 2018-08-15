@@ -22,13 +22,13 @@ exports.run = (client, message, args) => {
 
   const bet = Number(args[0]);
   const userBet = Number(bet*Math.pow(10,18))
-  const maxAllowedBet = Number(101*Math.pow(10,18))
+  const maxAllowedBet = Number(11*Math.pow(10,18))
   const minAllowedBet = Number(1000000000000)
   if (userBet <= minAllowedBet) {
     return message.reply("Im sorry you can not bet that amount! MIN 0.000001.");
   }
   if (userBet >= maxAllowedBet) {
-    return message.reply("Im sorry you can not bet that amount! MAX 100.");
+    return message.reply("Im sorry you can not bet that amount! MAX 10.");
   }
   con.getConnection(function(err, connection) {
     if (err) throw err; // not connected!

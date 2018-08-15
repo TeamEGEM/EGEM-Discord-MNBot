@@ -26,8 +26,12 @@ exports.run = (client, message, args) => {
   let isOnline = "Offline";
   let author = message.author.id;
   let user = message.author.username;
+  let addycheck = web3.utils.isAddress(address);
   if (address == null) {
     return message.reply("Please add your address when registering.")
+  }
+  if (addycheck !== true) {
+    return message.reply("Not a valid EGEM address.")
   }
   con.getConnection(function(err, connection) {
     if (err) throw err; // not connected!

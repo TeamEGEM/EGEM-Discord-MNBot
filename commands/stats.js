@@ -39,6 +39,8 @@ exports.run = (client, message, args) => {
           var payAmountBonus = obj[0]['nodesPaymentBonus'];
           var totalCredits = obj[0]['totalCredits'];
           var totalDeposits = obj[0]['totalDeposits'];
+          var totalWithdrawals = obj[0]['totalWithdrawals'];
+          var totalDepositCount = obj[0]['totalDepositCount'];
           var totalPay15 = obj[0]['totalPay15'];
           var dailyPayTotal = obj[0]['dailyPayTotal'];
           var dailyPayBonusTotal = obj[0]['dailyPayBonusTotal'];
@@ -78,8 +80,8 @@ exports.run = (client, message, args) => {
                   .addField("Quarry Balance:", ":moneybag: = "+amount + " EGEM.")
                   .addField("Total Users Registered  |  Nodes Online  |  Estimated EGEM Locked:", "👥 = "+totalUsers+ " users in Database."+"  |  "+"✅ = "+nodesData3+" :moneybag: = "+Number(totalLocked).toFixed(0) + " EGEM.")
                   .addField("All Credits In Database:", ":moneybag: = "+totalCredits/Math.pow(10,18) + " EGEM.")
-                  .addField("Total Credits Withdrawn:", "💳 = "+totalWithdrawn/Math.pow(10,18) + " EGEM.")
-                  .addField("Total Credit Deposits:", "💳 = "+totalDeposits/Math.pow(10,18) + " EGEM.")
+                  .addField("Total Credits Withdrawn:", "💳 = "+totalWithdrawn/Math.pow(10,18) + " EGEM in " +totalWithdrawals +" Withdrawals.")
+                  .addField("Total Credit Deposits:", "💳 = "+totalDeposits/Math.pow(10,18) + " EGEM in "+totalDepositCount +" Deposits.")
                   .addField("ATTENTION: ", "Please use /paystats to see node rewards and info.")
 
                   connection.release();

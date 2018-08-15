@@ -4,6 +4,7 @@ const miscSettings = require("../configs/settings.json");
 const botChans = require("../configs/botchans.json");
 const prefix = miscSettings.prefix;
 var getJSON = require('get-json');
+var functions = require('../func/main.js');
 
 exports.run = (client, message, args) => {
   if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
@@ -11,6 +12,24 @@ exports.run = (client, message, args) => {
   if (address == null) {
     return message.reply("Please enter a valid EGEM address to lookup.")
   }
+  // // try {
+  // //   const balance = functions.getBalance(address);
+  // // } catch (e) {
+  // //
+  // // } finally {
+  // //   const balance = functions.getBalance(address);
+  // //   console.log(balance);
+  // // }
+  // function balance(address) {
+  //   return new Promise(resolve => {
+  //     setTimeout(() => {
+  //       resolve(
+  //         functions.getBalance(address)
+  //       );
+  //     }, 2000);
+  //   });
+  // }
+
   var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + address, function(error, response){
     if(!error) {
       let amount = response["BALANCE"];

@@ -37,7 +37,7 @@ exports.run = (client, message, args) => {
         var obj2 = JSON.parse(parsed2);
 
         try {
-        var credits = obj2[0]['credits']
+        var credits = obj2[0]['credits'];
         if (timeGame == "Offline") {
           const embed = new Discord.RichEmbed()
             .setTitle("EGEM Discord Bot.")
@@ -53,62 +53,78 @@ exports.run = (client, message, args) => {
             .addField("Game is: ", timeGame)
 
             connection.release();
-            talkedRecently.add(message.author.id);
-            setTimeout(() => {
-              // Removes the user from the set after 2.5 seconds
-              talkedRecently.delete(message.author.id);
-            }, 120000);
             return message.reply({embed})
 
         } else {
+              const embed = new Discord.RichEmbed()
+          			.setTitle("EGEM Discord Bot.")
+          			.setAuthor("TheEGEMBot", miscSettings.egemspin)
 
-          if(isNaN(bet)){
-            if (talkedRecently.has(message.author.id)) {
-              message.reply("Wait for the cooldown! 120sec.");
-              return;
-            }
-            connection.release();
-            talkedRecently.add(message.author.id);
-            setTimeout(() => {
-              // Removes the user from the set after 2.5 seconds
-              talkedRecently.delete(message.author.id);
-            }, 120000);
-            if (roll > 6) {
-              let amount = (Math.random() * (0.020 - 0.0050) + 0.0050).toFixed(8);
-              let weiAmount = amount*Math.pow(10,18);
-              var newBal = (Number(credits) + Number(weiAmount))
-              var chatBal = functions.numberToString(newBal)/Math.pow(10,18)
-              connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(newBal),message.author.id]);
-              return message.reply("Win!"+" :trophy: You rolled a: "+roll+" | New Balance: "+ chatBal+ " | Amount Won: " + amount)
-            } else {
-              return message.reply("Lost!"+" :x: You rolled a: "+roll)
-            }
-          } else {
-            var winBet = Number(bet*Math.pow(10,18))
-            if (winBet >= credits) {
-              return message.reply("Not enough credits to bet.")
-            }
-            var ifNeg = Math.sign(winBet);
-            if (ifNeg == "-1") {
-              return message.reply("You can't bet a negative amount.");
-            }
-            if(roll >= 7) {
-              //message.reply("non free roll "+ roll + " credits: " + credits + " winbet: " + winBet)
-              var newBal = (Number(credits) + Number(winBet))
-              var chatBal = functions.numberToString(newBal)/Math.pow(10,18)
-              connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(newBal),message.author.id]);
-              connection.release();
-              return message.reply("Win!"+" :trophy: You rolled a: "+roll+" | New Balance: "+ chatBal)
-            } else {
-              //message.reply("non free roll "+ roll + " credits: " + credits + " winbet: " + winBet)
-              var newBal = (Number(credits) - Number(winBet))
-              var chatBal = functions.numberToString(newBal)/Math.pow(10,18)
-              connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(newBal),message.author.id]);
-              connection.release();
-              return message.reply("Lost!"+" :x: You rolled a: "+roll+" | New Balance: "+ chatBal)
-            }
+          			.setColor(miscSettings.okcolor)
+          			.setDescription("EGEM Time Trial:")
+          			.setFooter(miscSettings.footerBranding, miscSettings.img32x32)
+          			.setThumbnail(miscSettings.stopwatch)
 
-          }
+          			.setTimestamp()
+          			.setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          			.addField("START!", "You have 15 Seconds to get the correct number between 1 - 30")
+
+          		message.channel.send({embed})
+          		.then(() => {
+          			var number = Math.floor((Math.random() * 30) + 1)
+          			//console.log(number)
+          	  	message.channel.awaitMessages(response => response.content == Number(number), {
+          	    max: 1,
+          	    time: 15000,
+          	    errors: ['time'],
+          		})
+          	  .then((collected) => {
+          			let amount = (Math.random() * (0.100 - 0.0050) + 0.0050).toFixed(8);
+          			let weiAmount = amount*Math.pow(10,18);
+                var winTotal = Number(Number(weiAmount) + Number(credits));
+                //console.log(winTotal);
+                connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(winTotal),message.author.id]);
+          			const embed = new Discord.RichEmbed()
+          				.setTitle("EGEM Discord Bot.")
+          				.setAuthor("TheEGEMBot", miscSettings.egemspin)
+
+          				.setColor(miscSettings.okcolor)
+          				.setDescription("EGEM Time Trial Game:")
+          				.setFooter(miscSettings.footerBranding, miscSettings.img32x32)
+          				.setThumbnail(miscSettings.stopwatch)
+
+          				.setTimestamp()
+          				.setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          				.addField("WINNER! :first_place: "+ Number(amount)+" EGEM", "@" + message.author.username + " The correct number is: " +number)
+                  .addField("New Balance: ", Number(winTotal/Math.pow(10,18))+ " EGEM.")
+
+          			message.channel.send({embed})
+
+          			// // Adds the user to the set so that they can't talk for x
+          			// trialcooldown.add(message.author.id);
+          			// setTimeout(() => {
+          			// 	// Removes the user from the set after a minute
+          			// 	trialcooldown.delete(message.author.id);
+          			// }, miscSettings.cdtimetrial);
+          		})
+              .catch(() => {
+          			const embed = new Discord.RichEmbed()
+          				.setTitle("EGEM Discord Bot.")
+          				.setAuthor("TheEGEMBot", miscSettings.egemspin)
+
+          				.setColor(miscSettings.warningcolor)
+          				.setDescription("EGEM Time Trial Game:")
+          				.setFooter(miscSettings.footerBranding, miscSettings.img32x32)
+          				.setThumbnail(miscSettings.stopwatch)
+
+          				.setTimestamp()
+          				.setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          				.addField("NO WINNER!", "There was no correct answer within the time limit!")
+                  .addField("Answer was: ", number)
+
+          			message.channel.send({embed})
+              });
+            })
 
         }
         connection.release();

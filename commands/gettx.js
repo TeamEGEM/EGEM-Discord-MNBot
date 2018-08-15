@@ -6,7 +6,6 @@ var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
 
 exports.run = (client, message, args) => {
-  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   let block = args[0];
   web3.eth.getTransaction(args[0], (error,result)=>{
     if(!error){
