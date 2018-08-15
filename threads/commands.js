@@ -84,7 +84,6 @@ setInterval(threadHB,miscSettings.HBDelay);
 bot.on("message",async message => {
 
   if(message.author.bot) return;
-	if(message.channel.type === "dm") return;
   if(message.content.indexOf(miscSettings.prefix) !== 0) return;
 
   // This is the best way to define args. Trust me.

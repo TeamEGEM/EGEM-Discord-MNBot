@@ -14,7 +14,7 @@ const { JSDOM } = jsdom;
 var async = require("async");
 var functions = require('../func/main.js');
 require('console-color-mr');
-
+require('log-timestamp');
 
 const botSettings = require("../configs/config.json");
 const miscSettings = require("../configs/settings.json");

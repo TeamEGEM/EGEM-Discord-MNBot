@@ -105,9 +105,27 @@ const updateNodes = function upN(){
                 var obj6 = JSON.parse(parsed6);
                 var totalDeposits = obj6[0]['totalDeposits'];
                 //var totalPayEgem = Number(totalPay/Math.pow(10,18));
-                console.info("Total Deposits: "+ functions.numberToString(totalDeposits))
+                console.info("Total Deposited: "+ functions.numberToString(totalDeposits))
                 pool.query(`UPDATE settings SET totalDeposits =? WHERE id ='1'`, functions.numberToString(totalDeposits));
+                pool.query("SELECT COUNT(hash) AS totalWD FROM txdatasent", function (err, res6) {
+                  if (err) return message.reply("No Results.");
+                  var parsed7 = JSON.stringify(res6);
+                  var obj7 = JSON.parse(parsed7);
+                  var totalWD = obj7[0]['totalWD'];
+                  //var totalPayEgem = Number(totalPay/Math.pow(10,18));
+                  console.info("Total Withdrawals: "+ totalWD)
+                  pool.query(`UPDATE settings SET totalWithdrawals =? WHERE id ='1'`, totalWD);
+                  pool.query("SELECT COUNT(hash) AS totalDepositCount FROM txdata", function (err, res7) {
+                    if (err) return message.reply("No Results.");
+                    var parsed8 = JSON.stringify(res7);
+                    var obj8 = JSON.parse(parsed8);
+                    var totalDepositCount = obj8[0]['totalDepositCount'];
+                    //var totalPayEgem = Number(totalPay/Math.pow(10,18));
+                    console.info("Total Deposits: "+ totalDepositCount)
+                    pool.query(`UPDATE settings SET totalDepositCount =? WHERE id ='1'`, totalDepositCount);
 
+                  })
+                })
               })
             })
           })
