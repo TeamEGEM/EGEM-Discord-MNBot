@@ -4,7 +4,7 @@
   "description": "nunya",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"nodemon threads\\pinger.js\" \"nodemon threads\\pinger2.js\" \"nodemon threads\\count.js\" \"nodemon threads\\creditsTotal.js\" \"nodemon threads\\balance.js\" \"nodemon threads\\usersWD.js\" "
+    "start": "concurrently \"nodemon threads\\pinger.js\" \"nodemon threads\\pinger2.js\" \"nodemon threads\\count.js\" \"nodemon threads\\creditsTotal.js\" \"nodemon threads\\balance.js\" \"nodemon threads\\usersWD.js\" \"nodemon threads\\sqldump.js\" "
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,7 @@
     "mysql": "^2.16.0",
     "mysql-json": "^0.1.3",
     "mysql2": "^1.6.1",
+    "mysqldump": "^2.2.1",
     "net": "^1.0.2",
     "node-localstorage": "^1.3.1",
     "nonce": "^1.0.4",
