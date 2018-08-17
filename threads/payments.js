@@ -29,9 +29,6 @@ var con = mysql.createPool({
   database: botSettings.mysqldb
 });
 
-// Update Node List: Online/Offline and balance
-function getNodes(){ return JSON.parse(fs.readFileSync('./data/nodes.txt'));}
-
 // EtherGem web3
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));

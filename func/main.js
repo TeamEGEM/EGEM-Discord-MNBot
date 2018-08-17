@@ -5,10 +5,6 @@ const Web3 = require("web3");
 const Discord = require("discord.js");
 const BigNumber = require('bignumber.js');
 const fs = require("fs-extra");
-const isopen = require("isopen");
-const tcpscan = require('simple-tcpscan');
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
 var async = require("async");
 var mysql = require('mysql');
 

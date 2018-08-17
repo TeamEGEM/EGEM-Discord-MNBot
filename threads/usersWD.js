@@ -62,6 +62,28 @@ const updateNodes = function queryNodes(){
               connection.query(`UPDATE data SET numberOfWD = ? WHERE address = ?`, [totalWD, row.address]);
             }
           );
+          connection.query(
+            'SELECT SUM(value) AS `usersAmount` FROM `txdatasent` WHERE `to` = ?',
+            [row.address],
+            function(err, results, fields) {
+              var parsed = JSON.stringify(results);
+              var obj = JSON.parse(parsed);
+              var totalWDAmount = obj[0]['usersAmount'];
+              if (totalWDAmount == null) {
+                //do nothing
+              } else {
+                if (totalWDAmount >= 1000000000000000000000) {
+                  //console.log(functions.numberToString(totalWDAmount))
+                  connection.query(`UPDATE data SET numberOfWDAmount = ? WHERE address = ?`, [functions.numberToString(totalWDAmount), row.address]);
+                } else {
+                  //console.log(totalWDAmount);
+                  connection.query(`UPDATE data SET numberOfWDAmount = ? WHERE address = ?`, [totalWDAmount, row.address]);
+                }
+
+              }
+
+            }
+          );
 
         });
 

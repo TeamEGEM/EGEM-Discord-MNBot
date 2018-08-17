@@ -54,6 +54,7 @@ exports.run = (client, message, args) => {
         var credits = (creditsT/Math.pow(10,18)).toFixed(16);
         let nodeBonusPay = obj[0]["nodeBonusPay"];
         let numberOfWD = obj[0]["numberOfWD"];
+        let numberOfWDAmount = obj[0]["numberOfWDAmount"];
         let myPay = obj[0]["myPay"];
         let ip = obj[0]["ip"];
         let ip2 = obj[0]["ip2"];
@@ -94,7 +95,7 @@ exports.run = (client, message, args) => {
                   .addField("Quarry Registered: ", regTxSent, true)
                   .addField("Flagged for Cheating: ", hasCheated, true)
                   .addField("EGEM Balance: ", "💳 = "+amount2+ " EGEM.")
-                  .addField("Number Of Withdrawals: ", numberOfWD, true)
+                  .addField("Amount Withdrawn: ", (numberOfWDAmount/Math.pow(10,18))+ " EGEM in "+ numberOfWD +" Withdrawals", true)
                   .addField("Nodes Earning: ", canEarn, true)
                   .addField("Node Bonus: ", nodeBonusPay, true)
                   .addField(theflag, themsg)
