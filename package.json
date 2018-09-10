@@ -4,7 +4,7 @@
   "description": "nunya",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"nodemon threads\\pinger.js\" \"nodemon threads\\pinger2.js\" \"nodemon threads\\count.js\" \"nodemon threads\\creditsTotal.js\" \"nodemon threads\\balance.js\" \"nodemon threads\\usersWD.js\" \"nodemon threads\\sqldump.js\" "
+    "start": "concurrently \"nodemon threads\\pinger.js\" \"nodemon threads\\pinger2.js\" \"nodemon threads\\count.js\" \"nodemon threads\\creditsTotal.js\" \"nodemon threads\\balance.js\" \"nodemon threads\\usersWD.js\" \"nodemon threads\\sqldump.js\" \"nodemon threads\\getprices.js\" "
   },
   "repository": {
     "type": "git",
