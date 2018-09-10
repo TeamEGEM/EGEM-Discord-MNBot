@@ -48,16 +48,15 @@ const updateNodes = async function queryNodes(){
         let parsed = JSON.parse(obj);
 
         let txdata = result;
-        Object.keys(txdata).forEach(function(key) {
+        Object.keys(txdata).forEach(async function(key) {
           var row = txdata[key];
           var address = web3.utils.toChecksumAddress(row.address)
           try {
-            var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + address, function(error, response){
+            var userBalance = await getJSON('https://api.egem.io/api/v1/balances/?address=' + address, function(error, response){
               if(!error) {
                 let amount = response["BALANCE"];
                 //console.log(amount);
                 connection.query(`UPDATE data SET balance = ? WHERE userId = ?`, [amount, row.userId]);
-                //console.log("Balance Updated");
               } else {
                 //console.log(error + " | " +row.address+ " | " +row.userName);
               }

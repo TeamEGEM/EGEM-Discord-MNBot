@@ -100,7 +100,9 @@ bot.on("message",async message => {
 		console.error("**EGEM BOT** No file for that command, prolly other system in use.")
     console.error(err);
   }
-
+  if(message.content.startsWith(prefix + "easteregg")){
+    message.reply("Nice find!")
+  }
 });
 
 bot.on('error', console.error);

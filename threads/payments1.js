@@ -40,28 +40,6 @@ const threadHB = function sendHB(){
 };
 setInterval(threadHB,miscSettings.HBDelay);
 
-
-// Main sending function.
-function sendCoins(address,value,message,name){
-	web3.eth.sendTransaction({
-	    from: botSettings.address,
-	    to: address,
-	    gas: web3.utils.toHex(miscSettings.txgas),
-	    value: functions.numberToString(value)
-	})
-	.on('transactionHash', function(hash){
-		// sent pm with their tx
-		// recive latest array
-		if(name != 1){
-      console.log("Payment sent: " + hash);
-		} else {
-      console.log("Payment sent: " + hash);
-		}
-
-	})
-	.on('error', console.error);
-}
-
 const payNodes = function sendPay(){
   con.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
@@ -84,9 +62,6 @@ const payNodes = function sendPay(){
         let bonusPay = parseInt(res[0]['nodesPaymentBonus']);
         var message = "Enjoy the EGEM.";
 
-        //var weiAmount = (Number(pay) + Number(balance));
-        //var weiFinal = Number(weiAmount + balance)
-        //console.log(result)
         Object.keys(data).forEach(function(key) {
           var row = data[key];
           var address = row.address;
@@ -98,46 +73,14 @@ const payNodes = function sendPay(){
           var regTxSent = row.regTxSent;
           var balance = row.credits;
           var nodeBonusPay = row.nodeBonusPay;
-          if (nodeBonusPay !== "0") {
-            let pay = (Number(basePay) + Number(bonusPay));
-            var weiAmount = (Number(pay) + Number(balance));
-            if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
-                //console.log("No payment for user.");
-                return;
-            }
-            connection.query(`UPDATE data SET myPay =? WHERE userId = ?`, [functions.numberToString(pay),userId]);
-            connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
-          } else if (row.betaTester !== "No") {
+
+          if (canEarn == "Yes" && canEarn2 == "No" && row.betaTester == "Yes") {
             let pay = (Number(basePay) * Number(3));
             var weiAmount = (Number(pay) + Number(balance));
-            if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
-                //console.log("No payment for user.");
-                return;
-            }
-            connection.query(`UPDATE data SET myPay =? WHERE userId = ?`, [functions.numberToString(pay),userId]);
-            connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
-          } else {
-            let pay = parseInt(res[0]['nodesPayment']);
-            var weiAmount = (Number(pay) + Number(balance));
-            if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
-                //console.log("No payment for user.");
-                return;
-            }
             connection.query(`UPDATE data SET myPay =? WHERE userId = ?`, [functions.numberToString(pay),userId]);
             connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
           }
 
-
-          //console.log(balance)
-          // var weiAmount = (Number(pay) + Number(balance));
-          // if (hasCheated == "Yes" || canEarn == "No" || regTxSent == "No") {
-          //     //console.log("No payment for user.");
-          //     return;
-          // }
-          // connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(weiAmount),userId]);
-
-          //console.log("Payment Sent!. " + Number(weiAmount) + " | " + pay + "||" + balance);
-          //sendCoins(address,weiAmount,message,name);
         })
       })
     })
