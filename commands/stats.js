@@ -50,45 +50,52 @@ exports.run = (client, message, args) => {
           var dailyPay24hUTotal2 = (Number(dailyPay24hU2) * Number(24));
           var totalPay15x4 = (Number(totalPay15 * 4));
           var totalPay24 = (Number(totalPay15x4 * 24));
-          connection.query("SELECT COUNT(userId) AS totalUsers FROM data", function (err, res) {
+          connection.query("SELECT COUNT(autoWithdrawal) AS autoWithdrawal FROM data WHERE autoWithdrawal='Yes'", function (err, res4) {
             if (err) return message.reply("No Results.");
-            var parsed2 = JSON.stringify(res);
-            var obj2 = JSON.parse(parsed2);
-            var totalUsers = obj2[0]['totalUsers'];
-            connection.query("SELECT totalWithdrawn FROM settings", function (err, res2) {
+            var parsed4 = JSON.stringify(res4);
+            var obj4 = JSON.parse(parsed4);
+            var autoWithdrawal = obj4[0]['autoWithdrawal'];
+            connection.query("SELECT COUNT(userId) AS totalUsers FROM data", function (err, res) {
               if (err) return message.reply("No Results.");
-              var parsed3 = JSON.stringify(res2);
-              var obj3 = JSON.parse(parsed3);
-              var totalWithdrawn = obj3[0]['totalWithdrawn'];
-              connection.query("SELECT totalLocked FROM settings", function (err, res3) {
+              var parsed2 = JSON.stringify(res);
+              var obj2 = JSON.parse(parsed2);
+              var totalUsers = obj2[0]['totalUsers'];
+              connection.query("SELECT totalWithdrawn FROM settings", function (err, res2) {
                 if (err) return message.reply("No Results.");
-                var parsed4 = JSON.stringify(res3);
-                var obj4 = JSON.parse(parsed4);
-                var totalLocked = obj4[0]['totalLocked'];
-                const embed = new Discord.RichEmbed()
-                  .setTitle("EGEM Discord Bot.")
-                  .setAuthor("TheEGEMBot", miscSettings.egemspin)
+                var parsed3 = JSON.stringify(res2);
+                var obj3 = JSON.parse(parsed3);
+                var totalWithdrawn = obj3[0]['totalWithdrawn'];
+                connection.query("SELECT totalLocked FROM settings", function (err, res3) {
+                  if (err) return message.reply("No Results.");
+                  var parsed4 = JSON.stringify(res3);
+                  var obj4 = JSON.parse(parsed4);
+                  var totalLocked = obj4[0]['totalLocked'];
+                  const embed = new Discord.RichEmbed()
+                    .setTitle("EGEM Discord Bot.")
+                    .setAuthor("TheEGEMBot", miscSettings.egemspin)
 
-                  .setColor(miscSettings.okcolor)
-                  .setDescription("EGEM Quarry Status Info:")
-                  .setFooter(miscSettings.footerBranding, miscSettings.img32x32)
-                  .setThumbnail(miscSettings.img32shard)
+                    .setColor(miscSettings.okcolor)
+                    .setDescription("EGEM Quarry Status Info:")
+                    .setFooter(miscSettings.footerBranding, miscSettings.img32x32)
+                    .setThumbnail(miscSettings.img32shard)
 
-                  .setTimestamp()
-                  .setURL("https://github.com/TeamEGEM/EGEM-Bot")
-                  .addField("Deposit Address:", "["+address+"](https://explorer.egem.io/addr/" +address+ ")")
-                  .addField("Quarry Balance:", ":moneybag: = "+amount + " EGEM.")
-                  .addField("Total Users Registered  |  Nodes Online  |  Estimated EGEM Locked:", "👥 = "+totalUsers+ " users in Database."+"  |  "+"✅ = "+nodesData3+" :moneybag: = "+Number(totalLocked).toFixed(0) + " EGEM.")
-                  .addField("All Credits In Database:", ":moneybag: = "+totalCredits/Math.pow(10,18) + " EGEM.")
-                  .addField("Total Credits Withdrawn:", "💳 = "+totalWithdrawn/Math.pow(10,18) + " EGEM in " +totalWithdrawals +" Withdrawals.")
-                  .addField("Total Credit Deposits:", "💳 = "+totalDeposits/Math.pow(10,18) + " EGEM in "+totalDepositCount +" Deposits.")
-                  .addField("ATTENTION: ", "Please use /paystats to see node rewards and info.")
+                    .setTimestamp()
+                    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+                    .addField("Deposit Address:", "["+address+"](https://explorer.egem.io/addr/" +address+ ")")
+                    .addField("Quarry Balance:", ":moneybag: = "+amount + " EGEM.")
+                    .addField("Total Users Registered  |  Nodes Online  |  Estimated EGEM Locked:", "👥 = "+totalUsers+ " users in Database."+"  |  "+"✅ = "+nodesData3+" :moneybag: = "+Number(totalLocked).toFixed(0) + " EGEM.")
+                    .addField("Autopay Enabled Users: ", autoWithdrawal)
+                    .addField("All Credits In Database:", ":moneybag: = "+totalCredits/Math.pow(10,18) + " EGEM.")
+                    .addField("Total Credits Withdrawn:", "💳 = "+totalWithdrawn/Math.pow(10,18) + " EGEM in " +totalWithdrawals +" Withdrawals.")
+                    .addField("Total Credit Deposits:", "💳 = "+totalDeposits/Math.pow(10,18) + " EGEM in "+totalDepositCount +" Deposits.")
+                    .addField("ATTENTION: ", "Please use /paystats to see node rewards and info.")
 
-                  connection.release();
-                  return message.reply({embed});
-                })
+                    connection.release();
+                    return message.reply({embed});
+                  })
+              })
             })
-          })
+        })
 
 
 

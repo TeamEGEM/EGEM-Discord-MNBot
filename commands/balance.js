@@ -12,23 +12,6 @@ exports.run = (client, message, args) => {
   if (address == null) {
     return message.reply("Please enter a valid EGEM address to lookup.")
   }
-  // // try {
-  // //   const balance = functions.getBalance(address);
-  // // } catch (e) {
-  // //
-  // // } finally {
-  // //   const balance = functions.getBalance(address);
-  // //   console.log(balance);
-  // // }
-  // function balance(address) {
-  //   return new Promise(resolve => {
-  //     setTimeout(() => {
-  //       resolve(
-  //         functions.getBalance(address)
-  //       );
-  //     }, 2000);
-  //   });
-  // }
 
   var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + address, function(error, response){
     if(!error) {

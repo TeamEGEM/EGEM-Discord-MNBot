@@ -23,6 +23,9 @@ exports.run = (client, message, args) => {
     .addField("CUBEPOOL.EU", "https://egem.cubepool.eu/")
     .addField("PoolFun Multi", "http://poolfun.ru/")
     .addField("Saiyan Mining", "https://egem.saiyanmining.club/")
+    .addField("Crazy Pool", "http://egem.crazypool.org/")
+    .addField("Hashing Pool Party", "http://egem.hashingpool.party/")
+    .addField("Digi Pools", "http://egem.digipools.org/")
 
     message.channel.send({embed})
 }

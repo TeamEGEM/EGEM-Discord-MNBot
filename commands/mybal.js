@@ -23,6 +23,8 @@ web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
 
 const talkedRecently = new Set();
 
+//ranks
+
 exports.run = (client, message, args) => {
   if (talkedRecently.has(message.author.id)) {
     message.reply("Wait for the cooldown! 120sec.");
@@ -58,13 +60,14 @@ exports.run = (client, message, args) => {
         let myPay = obj[0]["myPay"];
         let ip = obj[0]["ip"];
         let ip2 = obj[0]["ip2"];
+        let autoWithdrawals = obj[0]["autoWithdrawal"];
         if (authorCheck == author) {
           if (author == authorCheck) {
-            connection.release();
             //console.log(obj);
             var userBalance = getJSON('https://api.egem.io/api/v1/balances/?address=' + address, function(error, response){
               if(!error) {
                 var amount2 = response["BALANCE"];
+                //connection.query(`UPDATE data SET balance = ? WHERE userId = ?`, [amount, row.userId]);
                 //return message.reply("you have " + amount2 + " EGEM (LIVE) | " + amount + " EGEM (DB)" + " | Cheated: " + hasCheated + " | Earning: " + canEarn);
                 talkedRecently.add(message.author.id);
                 setTimeout(() => {
@@ -73,11 +76,66 @@ exports.run = (client, message, args) => {
                 }, 120000);
                 if (betaTester == "Yes") {
                   var theflag = "Beta Tester:"
-                  var themsg = "Thank you for helping at the start!"
+                  var themsg = "Thank you for helping at the start! :tada:"
                 } else {
                   var theflag = "Normal User:"
                   var themsg = "Thank you for signing up!"
                 }
+                var title = "null";
+                var balance = amount2;
+                if(balance >= 1000000){
+                  var title = "Grand Dragon :dragon:";
+                  var next = "You are at MAX rank.";
+                } else if(balance >= 500000){
+                  var title = "Unicorn :unicorn:";
+                  var next = "1000000 EGEM";
+                } else if(balance >= 250000){
+                  var title = "Humpback Whale :whale:";
+                  var next = "500000 EGEM";
+                } else if(balance >= 150000){
+                  var title = "Elephant :elephant:";
+                  var next = "250000 EGEM";
+                } else if(balance >= 75000){
+                  var title = "Killer Whale :whale2:";
+                  var next = "150000 EGEM";
+                } else if(balance >= 50000){
+                  var title = "Turtle :turtle:";
+                  var next = "75000 EGEM";
+                } else if(balance >= 25000){
+                  var title = "Shark :shark:";
+                  var next = "50000 EGEM";
+                } else if(balance >= 15000){
+                  var title = "Crocodile :crocodile:";
+                  var next = "25000 EGEM";
+                } else if(balance >= 7500){
+                  var title = "Dolphin :dolphin:";
+                  var next = "15000 EGEM";
+                } else if(balance >= 5000){
+                  var title = "Puffer Fish :blowfish:";
+                  var next = "7500 EGEM";
+                } else if(balance >= 2500){
+                  var title = "Octopus :octopus: ";
+                  var next = "5000 EGEM";
+                } else if(balance >= 1000){
+                  var title = "Snow Crab :crab:";
+                  var next = "2500 EGEM";
+                } else if(balance >= 500){
+                  var title = "Shrimp :shrimp:";
+                  var next = "1000 EGEM";
+                } else if(balance >= 50){
+                  var title = "Plankton :seedling:";
+                  var next = "500 EGEM";
+                } else if(balance == 0){
+                  var title = "This balance is empty. :x:";
+                  var next = "50 EGEM";
+                } else {
+                  var title = ":space_invader: You require more EGEM.";
+                  var next = "50 EGEM";
+                }
+                //var amount3 = (amount2*Math.pow(10,18));
+                //console.log(functions.numberToString(amount3));
+                connection.query(`UPDATE data SET balance =? WHERE userId = ?`, [amount2,author]);
+                connection.release();
                 const embed = new Discord.RichEmbed()
                   .setTitle("EGEM Discord Bot.")
                   .setAuthor("TheEGEMBot", miscSettings.egemspin)
@@ -89,18 +147,19 @@ exports.run = (client, message, args) => {
 
                   .setTimestamp()
                   .setURL("https://github.com/TeamEGEM/EGEM-Bot")
-                  .addField("Registered Address:", "["+address+"](https://explorer.egem.io/addr/" +address+ ")")
-                  .addField("Quarry #1 IP: ", "is "+ isOnline, true)
-                  .addField("Quarry #2 IP: ", "is "+ isOnline2, true)
-                  .addField("Quarry Registered: ", regTxSent, true)
-                  .addField("Flagged for Cheating: ", hasCheated, true)
-                  .addField("EGEM Balance: ", "💳 = "+amount2+ " EGEM.")
-                  .addField("Amount Withdrawn: ", (numberOfWDAmount/Math.pow(10,18))+ " EGEM in "+ numberOfWD +" Withdrawals", true)
-                  .addField("Nodes Earning: ", canEarn, true)
-                  .addField("Node Bonus: ", nodeBonusPay, true)
-                  .addField(theflag, themsg)
-                  .addField("Last Node Pay: ", (myPay/Math.pow(10,18))+ " EGEM.")
+                  .addField("Registered Address:", "["+address+"](https://explorer.egem.io/addr/"+address+")")
+                  .addField("Quarry #1: ", "is "+isOnline, true)
+                  .addField("Quarry #2: ", "is "+isOnline2, true)
+                  .addField("Quarry Registered: ", regTxSent)
+                  .addField("EGEM Rank: ", title, true)
+                  .addField("Next Rank: ", next, true)
+                  .addField("EGEM Balance: ", "💳 = "+amount2+ " EGEM." + " | Est. Value: $ n/a")
                   .addField("EGEM Credits: ", "💰 = "+creditsT+ " EGEM.")
+                  .addField("Amount Withdrawn: ", (numberOfWDAmount/Math.pow(10,18))+ " EGEM in "+ numberOfWD +" Withdrawals")
+                  .addField("Auto Withdrawals Enabled: ", autoWithdrawals)
+                  .addField("Status: "+theflag, themsg)
+                  .addField("Nodes Earning: ", canEarn, true)
+                  .addField("Last Node Pay: ", (myPay/Math.pow(10,18))+ " EGEM.", true)
                   return message.reply({embed});
               } else {
                 console.log(error);

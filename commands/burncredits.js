@@ -25,7 +25,7 @@ web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
 exports.run = (client, message, args) => {
   if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   if(!message.member.hasPermission('ADMINISTRATOR')){
-    return message.channel.send("You cannot use '/bunrcredits' command");
+    return message.channel.send("You cannot use '/burncredits' command");
   }
   if (talkedRecently.has(message.author.id)) {
     message.reply("Wait for the cooldown! 120sec.");
