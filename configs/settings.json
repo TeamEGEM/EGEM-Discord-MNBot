@@ -12,6 +12,7 @@
 	"NodeDelay": "120000",
 	"NodeDelay2": "120000",
 	"BalanceDelay": "300000",
+	"PriceDelay": "100000",
 	"PayDelay": "900000",
 	"AutoPayDelay": "3610000",
 	"CountDelay": "90000",
