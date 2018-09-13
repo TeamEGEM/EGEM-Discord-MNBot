@@ -80,7 +80,7 @@ exports.run = (client, message, args) => {
                     .setThumbnail(miscSettings.img32shard)
 
                     .setTimestamp()
-                    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+                    .setURL(miscSettings.ghlink)
                     .addField("Deposit Address:", "["+address+"](https://explorer.egem.io/addr/" +address+ ")")
                     .addField("Quarry Balance:", ":moneybag: = "+amount + " EGEM.")
                     .addField("Total Users Registered  |  Nodes Online  |  Estimated EGEM Locked:", "👥 = "+totalUsers+ " users in Database."+"  |  "+"✅ = "+nodesData3+" :moneybag: = "+Number(totalLocked).toFixed(0) + " EGEM.")

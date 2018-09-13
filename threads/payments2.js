@@ -75,7 +75,7 @@ const payNodes = function sendPay(){
           var balance2 = row.balance;
           var nodeBonusPay = row.nodeBonusPay;
 
-          if (canEarn == "Yes" && canEarn2 == "Yes" && balance2 >= 40000) {
+          if (canEarn == "Yes" && canEarn2 == "Yes") {
             let pay = (Number(basePay) + Number(bonusPay));
             var weiAmount = (Number(pay) + Number(balance));
             connection.query(`UPDATE data SET myPay =? WHERE userId = ?`, [functions.numberToString(pay),userId]);

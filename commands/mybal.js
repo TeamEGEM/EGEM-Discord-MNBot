@@ -157,7 +157,7 @@ exports.run = (client, message, args) => {
                     .setThumbnail(miscSettings.img32shard)
 
                     .setTimestamp()
-                    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+                    .setURL(miscSettings.ghlink)
                     .addField("Registered Address:", "["+address+"](https://explorer.egem.io/addr/"+address+")")
                     .addField("Quarry #1: ", "is "+isOnline, true)
                     .addField("Quarry #2: ", "is "+isOnline2, true)

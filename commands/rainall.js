@@ -47,7 +47,7 @@ exports.run = (client, message, args) => {
     return message.reply("You can't rain a negative amount.");
   }
   if(isNaN(value)){
-   return message.reply("That is not a valid number.");
+    return message.reply("That is not a valid number.");
   }
   if (value >= 999) {
     return message.reply("You can not rain that much.")
@@ -83,5 +83,4 @@ exports.run = (client, message, args) => {
         }
     );
   })
-
 };

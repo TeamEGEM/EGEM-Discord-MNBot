@@ -25,6 +25,7 @@ exports.run = (client, message, args) => {
   if (playerhand1 >= 11) {
     let playerhand1 = 11;
   }
+
   const embed = new Discord.RichEmbed()
     .setTitle("EGEM Discord Bot.")
     .setAuthor("TheEGEMBot", miscSettings.egemspin)
@@ -35,7 +36,7 @@ exports.run = (client, message, args) => {
     .setThumbnail(miscSettings.blackjack)
 
     .setTimestamp()
-    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+    .setURL(miscSettings.ghlink)
     .addField("Dealer shuffles the deck.", "Here is your first card for this round.")
     .addField("🧟 Player Card #1:", "🃏 " + playerhand1)
     .addField("🧙 Dealer Card #1:", "🃏 " + dealerhand1)
@@ -49,7 +50,10 @@ exports.run = (client, message, args) => {
       errors: ['time'],
     })
     .then((collected) => {
-      if (collected.first().content == "Hit") {
+      if (collected.first() == "Hit") {
+        if (message.author.id !== message.author.id) {
+          return;
+        }
         let playerhand2 = Math.floor((Math.random() * 13) + 1);
         let dealerhand2 = Math.floor((Math.random() * 13) + 1);
         if (dealerhand2 >= 11) {
@@ -78,14 +82,17 @@ exports.run = (client, message, args) => {
           .setThumbnail(miscSettings.blackjack)
 
           .setTimestamp()
-          .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          .setURL(miscSettings.ghlink)
           .addField("Dealer shuffles the deck.", "Here are your final cards for this round.")
           .addField("🧟 Player Hand:", "🃏 " + playerhand1 + " + " + " 🃏 " + playerhand2 + " = " + "( " + playerhand + " )")
           .addField("🧙 Dealer Hand:", "🃏 " + dealerhand1 + " + " + " 🃏 " + dealerhand2 + " = " + "( " + dealerhand + " )")
           .addField("Results:", results)
 
         message.channel.send({embed})
-      } else if (collected.first().content == "Stand") {
+      } else if (collected.first() == "Stand") {
+        if (message.author.id !== message.author.id) {
+          return;
+        }
         let dealerhand2 = Math.floor((Math.random() * 13) + 1);
         var dealerhand = dealerhand1+dealerhand2;
         message.reply("is going to Stand!");
@@ -104,7 +111,7 @@ exports.run = (client, message, args) => {
           .setThumbnail(miscSettings.blackjack)
 
           .setTimestamp()
-          .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          .setURL(miscSettings.ghlink)
           .addField("Dealer shuffles the deck.", "Here are final your cards for this round.")
           .addField("🧟 Player Hand:", "🃏 " + playerhand1 + " + " + " 🃏 " + "STAND" + " = " + "( " + playerhand1 + " )")
           .addField("🧙 Dealer Hand:", "🃏 " + dealerhand1 + " + " + " 🃏 " + dealerhand2 + " = " + "( " + dealerhand + " )")

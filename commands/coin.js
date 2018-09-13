@@ -21,7 +21,7 @@ exports.run = (client, message, args) => {
         .setThumbnail(miscSettings.img32shard)
 
         .setTimestamp()
-        .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+        .setURL(miscSettings.ghlink)
         .addField("Total Supply:", supply+" EGEM")
         .addField("Market Cap:", Number(mcap).toFixed(2)+" USD")
         .addField("Average Price:", Number(avgUSD).toFixed(4)+" USD")

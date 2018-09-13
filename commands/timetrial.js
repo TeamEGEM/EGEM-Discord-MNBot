@@ -49,7 +49,7 @@ exports.run = (client, message, args) => {
             .setThumbnail(miscSettings.img32shard)
 
             .setTimestamp()
-            .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+            .setURL(miscSettings.ghlink)
             .addField("Game is: ", timeGame)
 
             connection.release();
@@ -66,7 +66,7 @@ exports.run = (client, message, args) => {
           			.setThumbnail(miscSettings.stopwatch)
 
           			.setTimestamp()
-          			.setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          			.setURL(miscSettings.ghlink)
           			.addField("START!", "You have 15 Seconds to get the correct number between 1 - 30")
 
           		message.channel.send({embed})
@@ -94,7 +94,7 @@ exports.run = (client, message, args) => {
           				.setThumbnail(miscSettings.stopwatch)
 
           				.setTimestamp()
-          				.setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          				.setURL(miscSettings.ghlink)
           				.addField("WINNER! :first_place: "+ Number(amount)+" EGEM", "@" + message.author.username + " The correct number is: " +number)
                   .addField("New Balance: ", Number(winTotal/Math.pow(10,18))+ " EGEM.")
 
@@ -118,7 +118,7 @@ exports.run = (client, message, args) => {
           				.setThumbnail(miscSettings.stopwatch)
 
           				.setTimestamp()
-          				.setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          				.setURL(miscSettings.ghlink)
           				.addField("NO WINNER!", "There was no correct answer within the time limit!")
                   .addField("Answer was: ", number)
 

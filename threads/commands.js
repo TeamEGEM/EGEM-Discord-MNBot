@@ -51,7 +51,7 @@ const motd = function sendMotd(){
 				.setThumbnail(miscSettings.img32shard)
 
 				.setTimestamp()
-				.setURL("https://github.com/TeamEGEM/EGEM-Bot")
+				.setURL(miscSettings.ghlink)
 				.addField("News & Updates:", data)
 				.addField("Website:", miscSettings.websiteLink + " :pushpin: ")
 				.addField("Forums:", miscSettings.forumLink + " :pushpin: ")

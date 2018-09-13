@@ -26,7 +26,7 @@ exports.run = (client, message, args) => {
           .setThumbnail(miscSettings.img32shard)
 
           .setTimestamp()
-          .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          .setURL(miscSettings.ghlink)
           .addField("Mined in Block:", "["+minedBlock+"](https://explorer.egem.io/block/" +minedBlock+ ")")
           .addField("From:", "["+from+"](https://explorer.egem.io/addr/" +from+ ")")
           .addField("To:", "["+to+"](https://explorer.egem.io/addr/" +to+ ")")

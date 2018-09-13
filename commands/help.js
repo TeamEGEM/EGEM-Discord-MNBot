@@ -19,7 +19,7 @@ exports.run = (client, message, args) => {
     .setThumbnail(miscSettings.img32shard)
 
     .setTimestamp()
-    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+    .setURL(miscSettings.ghlink)
     .addField(prefix+"botreg <egemaddress>", "register with the bot.")
     .addField(prefix+"stats", "shows the status of nodes.")
     .addField(prefix+"paystats", "shows the status of payments.")

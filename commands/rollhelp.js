@@ -19,7 +19,7 @@ exports.run = (client, message, args) => {
     .setThumbnail(miscSettings.img32shard)
 
     .setTimestamp()
-    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+    .setURL(miscSettings.ghlink)
     .addField(prefix+"roll", "roll a 6 or higher for a chance at some coins. (FREE ROLL/TIMELIMIT)")
     .addField(prefix+"roll <bet>", "roll a 7 or higher for a chance to double your bet.")
 

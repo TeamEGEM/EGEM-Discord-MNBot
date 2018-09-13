@@ -72,7 +72,7 @@ exports.run = (client, message, args) => {
                   .setThumbnail(miscSettings.img32shard)
 
                   .setTimestamp()
-                  .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+                  .setURL(miscSettings.ghlink)
                   .addField("Primary 24h Share:", "💰 = "+dailyPayTotal+ " EGEM",true)
                   .addField("Secondary 24h Share:", "💰 = "+dailyPayBonusTotal+ " EGEM",true)
                   .addField("Pri. Nodes Online  |  10,000c | Sec. Nodes Online  |  30,000c:", "✅ = "+nodesData+" -----|----- "+"✅ = "+nodesData2)

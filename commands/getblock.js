@@ -31,7 +31,7 @@ exports.run = (client, message, args) => {
           .setThumbnail(miscSettings.img32shard)
 
           .setTimestamp()
-          .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+          .setURL(miscSettings.ghlink)
           .addField("Parent Hash:", phash)
           .addField("Hash:", hash)
           .addField("Number:", "["+number+"](https://explorer.egem.io/block/" +number+ ")")

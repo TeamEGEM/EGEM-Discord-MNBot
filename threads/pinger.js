@@ -59,21 +59,15 @@ const updateNodes = function queryNodes(){
                 var regtx = row.regTxSent;
                 con.getConnection(function(err, connection) {
                   connection.query(`UPDATE data SET isOnline ="Online" WHERE userId = ?`, row.userId);
-                  if (regtx == "Yes") {
-                    if (row.balance >= 10000 && row.ip !== "192.168.1.66" && row.shouldCheck !== "No") {
-                      connection.query(`UPDATE data SET canEarn ="Yes" WHERE userId = ?`, row.userId);
-                    } else {
-                      connection.query(`UPDATE data SET canEarn ="No" WHERE userId = ?`, row.userId);
-                    }
-                    if (row.betaTester !== "No") {
-                      connection.query(`UPDATE data SET canEarn ="Yes" WHERE userId = ?`, row.userId);
-                    }
+                  if (regtx == "Yes" && row.balance >= 10000) {
+                    connection.query(`UPDATE data SET canEarn ="Yes" WHERE userId = ?`, row.userId);
                   } else {
                     connection.query(`UPDATE data SET canEarn ="No" WHERE userId = ?`, row.userId);
                   }
-                  connection.release();
                   console.info("Status: Online. - " + row.userId + " | Node IP #1: " + row.ip + " | Can Earn: " + row.canEarn);
+                  connection.release();
                 });
+
               },
               () => {
                 con.getConnection(function(err, connection) {
@@ -82,13 +76,11 @@ const updateNodes = function queryNodes(){
                   console.error("Status: Offline. - " + row.userId + " | Node IP #1: " + row.ip + " | Can Earn: " + row.canEarn);
                   connection.release();
                 });
-
               }
             );
 
           }
         });
-
 
       });
       connection.release();

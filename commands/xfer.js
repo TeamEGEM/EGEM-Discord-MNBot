@@ -110,7 +110,7 @@ exports.run = (client, message, args) => {
               .setThumbnail(miscSettings.img32shard)
 
               .setTimestamp()
-              .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+              .setURL(miscSettings.ghlink)
               .addField("Value Sent: ☚", (y/Math.pow(10,18)) + " EGEM || " + y + " WEI")
               .addField("Fee Deducted: ☚", (z/Math.pow(10,18)) + " EGEM || " + z + " WEI")
               .addField("Credits Remaining: ✨", (balanceFinal/Math.pow(10,18)) + " EGEM || " + balanceFinal2 + " WEI")

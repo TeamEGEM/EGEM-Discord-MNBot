@@ -33,7 +33,7 @@ exports.run = (client, message, args) => {
       .setThumbnail(miscSettings.img32shard)
 
       .setTimestamp()
-      .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+      .setURL(miscSettings.ghlink)
       .addField("Amount set to:", +pay+ " EGEM per/24h")
 
       message.channel.send({embed})

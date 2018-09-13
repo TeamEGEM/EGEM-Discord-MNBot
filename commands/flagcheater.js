@@ -38,7 +38,7 @@ exports.run = (client, message, args) => {
         .setThumbnail(miscSettings.img32shard)
 
         .setTimestamp()
-        .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+        .setURL(miscSettings.ghlink)
         .addField("Cheat flag set to: ", "**" + hasCheated + "**" + " on "+author)
 
         message.channel.send({embed})

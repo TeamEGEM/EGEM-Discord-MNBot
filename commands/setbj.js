@@ -16,7 +16,7 @@ var con = mysql.createPool({
 
 exports.run = (client, message, args) => {
   if(!message.member.hasPermission('ADMINISTRATOR')){
-    return message.channel.send("You cannot use '/setroll' command");
+    return message.channel.send("You cannot use '/setbj' command");
   }
   con.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
@@ -24,7 +24,7 @@ exports.run = (client, message, args) => {
     connection.query("SELECT * FROM data WHERE userId = ?", message.author.id, function (err, result) {
       if (!result) return message.reply("User Not registered, use /botreg <address>.");
       try {
-        connection.query(`UPDATE settings SET timeGame = ?`, response);
+        connection.query(`UPDATE settings SET bjGame = ?`, response);
         console.log("data updated");
         const embed = new Discord.RichEmbed()
           .setTitle("EGEM Discord Bot.")
@@ -37,7 +37,7 @@ exports.run = (client, message, args) => {
 
           .setTimestamp()
           .setURL(miscSettings.ghlink)
-          .addField("Timetrial Game set to: ", response)
+          .addField("BlackJack Game set to: ", response)
 
           message.reply({embed})
         connection.release();

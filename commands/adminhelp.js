@@ -22,7 +22,7 @@ exports.run = (client, message, args) => {
     .setThumbnail(miscSettings.img32shard)
 
     .setTimestamp()
-    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+    .setURL(miscSettings.ghlink)
     .addField(prefix+"flagcheater <userid> Yes/No", "self explanatory.")
     .addField(prefix+"setreg <userid> Yes/No", "self explanatory.")
     .addField(prefix+"setbeta <userid> Yes/No", "self explanatory.")

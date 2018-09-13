@@ -59,22 +59,13 @@ const updateNodes = function queryNodes(){
                 var regtx = row.regTxSent;
                 con.getConnection(function(err, connection) {
                   connection.query(`UPDATE data SET isOnline2 ="Online" WHERE userId = ?`, row.userId);
-                  if (regtx == "Yes") {
-                    if (row.isOnline2 == "Online" && row.balance >= 40000 && row.shouldCheck2 !== "No") {
-                      connection.query(`UPDATE data SET canEarn2 ="Yes" WHERE userId = ?`, row.userId);
-                      connection.release();
-                    } else {
-                      connection.query(`UPDATE data SET canEarn2 ="No" WHERE userId = ?`, row.userId);
-                      connection.release();
-                    }
-                    if (row.betaTester !== "No") {
-                      connection.query(`UPDATE data SET canEarn2 ="Yes" WHERE userId = ?`, row.userId);
-                    }
+                  if (regtx == "Yes" && row.balance >= 40000) {
+                    connection.query(`UPDATE data SET canEarn2 ="Yes" WHERE userId = ?`, row.userId);
                   } else {
                     connection.query(`UPDATE data SET canEarn2 ="No" WHERE userId = ?`, row.userId);
-                    connection.release();
                   }
                   console.info("Status: Online. - " + row.userId + " | Node IP #2: " + row.ip2 + " | Can Earn: " + row.canEarn2);
+                  connection.release();
                 });
               },
               () => {
@@ -84,7 +75,6 @@ const updateNodes = function queryNodes(){
                   console.error("Status: Offline. - " + row.userId + " | Node IP #2: " + row.ip2 + " | Can Earn: " + row.canEarn2);
                   connection.release();
                 });
-
               }
             );
 
@@ -103,6 +93,6 @@ const updateNodes = function queryNodes(){
   }
 
 };
-setInterval(updateNodes,miscSettings.NodeDelay2);
+setInterval(updateNodes,miscSettings.NodeDelay3);
 
 console.error("**NODE Pinger #2 SYSTEM** is now Online.");

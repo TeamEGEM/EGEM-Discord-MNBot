@@ -20,7 +20,7 @@ exports.run = (client, message, args) => {
     .setThumbnail(miscSettings.img32shard)
 
     .setTimestamp()
-    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+    .setURL(miscSettings.ghlink)
     .addField(prefix+"coin", "shows the market info for EGEM.")
     .addField(prefix+"markets", "shows where to trade for EGEM.")
     .addField(prefix+"pools", "shows where to mine for EGEM.")

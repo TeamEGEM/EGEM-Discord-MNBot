@@ -13,7 +13,7 @@ exports.run = (client, message, args) => {
     .setThumbnail(miscSettings.img32shard)
 
     .setTimestamp()
-    .setURL("https://github.com/TeamEGEM/EGEM-Bot")
+    .setURL(miscSettings.ghlink)
     .addField("EGEM DEV Pool", "https://pool.egem.io/")
     .addField("Minerpool.net (US/EU/ASIA)", "http://egem.minerpool.net/")
     .addField("CoMining.io (US/EU/ASIA)", "https://comining.io/")
