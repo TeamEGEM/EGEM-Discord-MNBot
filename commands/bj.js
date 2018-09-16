@@ -23,6 +23,9 @@ exports.run = (client, message, args) => {
     message.reply("Wait for the cooldown! 30sec.");
     return;
   }
+  if (args[0] != null) {
+    return message.reply(" No Betting!")
+  }
   // `m` is a message object that will be passed through the filter function
   const filter = m => m.author.id === message.author.id;
   const collector = message.channel.createMessageCollector(filter, { maxMatches: 1, time: 60000 });
@@ -77,7 +80,7 @@ exports.run = (client, message, args) => {
             .addField("Dealer shuffles the deck.", "Here is your first card for this round.")
             .addField("🧟 Player Card #1:", "🃏 " + playerhand1)
             .addField("🧙 Dealer Card #1:", "🃏 " + dealerhand1)
-            .addField("Hit or Stand","One minute to pick...")
+            .addField("Hit or Stand","One minute to pick, mistakes will result in a fail.")
 
           message.reply({embed})
 
@@ -96,12 +99,9 @@ exports.run = (client, message, args) => {
               let playerhand = playerhand1+playerhand2;
 
               if (playerhand > dealerhand && playerhand <= 21) {
-                var amount = (Math.random() * (0.020 - 0.0050) + 0.0050).toFixed(8);
+                var amount = (Math.random() * (0.010 - 0.0050) + 0.0050).toFixed(8);
                 var weiAmount = amount*Math.pow(10,18);
-                console.log(credits);
-                console.log(weiAmount);
                 var newBal = (Number(credits) + Number(weiAmount));
-                console.log(newBal);
                 var results = "Won! :trophy:";
                 var winnings = "A Taco! :taco:";
                 connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(newBal),message.author.id]);
@@ -147,16 +147,13 @@ exports.run = (client, message, args) => {
               var dealerhand = dealerhand1+dealerhand2;
 
               if (playerhand1 > dealerhand) {
-                var amount = (Math.random() * (0.020 - 0.0050) + 0.0050).toFixed(8);
+                var amount = (Math.random() * (0.010 - 0.0050) + 0.0050).toFixed(8);
                 var weiAmount = amount*Math.pow(10,18);
-                console.log(credits);
-                console.log(weiAmount);
                 var newBal = (Number(credits) + Number(weiAmount));
-                console.log(newBal);
                 var results = "Won! :trophy:";
                 var winnings = "A taco!";
                 connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(newBal),message.author.id]);
-              } else if (playerhand == dealerhand) {
+              } else if (playerhand1 == dealerhand) {
                 var amount = 0;
                 var results = "Draw! :space_invader:";
                 var winnings = "Broke Even";
