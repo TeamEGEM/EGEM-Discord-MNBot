@@ -20,8 +20,7 @@ exports.run = (client, message, args) => {
 
     .setTimestamp()
     .setURL(miscSettings.ghlink)
-    .addField(prefix+"rollhelp", "learn how to play the roll game.")
-    .addField(prefix+"bjhelp", "learn how to play the blackjack game.")
+    .addField(prefix+"bj", "hit or stand to win some egem.")
 
     message.reply({embed})
     talkedRecently.add(message.author.id);

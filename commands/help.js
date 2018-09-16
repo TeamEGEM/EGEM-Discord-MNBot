@@ -30,7 +30,7 @@ exports.run = (client, message, args) => {
     .addField(prefix+"balance <egemaddress>", "check a users balance.")
     .addField(prefix+"deposit <transactionHash>", "deposit to credits.")
     .addField(prefix+"withdrawal <value>", "claim earned balance.")
-    .addField(prefix+"autopay", "turn auto withdrawal on/off.")
+    .addField(prefix+"autopay", "turn auto withdrawal on/off. 10 EGEM min.")
     .addField(prefix+"xfer <discordid> <value>", "send/tip an amount to a user.")
     .addField(prefix+"toHex <value>", "encode a message to hex format.")
     .addField(prefix+"fromHex <value>", "decode a message from hex format.")
