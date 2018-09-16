@@ -22,7 +22,7 @@ const botChans = require("../configs/botchans.json");
 var mysql = require('mysql');
 
 var con = mysql.createPool({
-  connectionLimit : 100,
+  connectionLimit : 200,
   host: botSettings.mysqlip,
   user: botSettings.mysqluser,
   password: botSettings.mysqlpass,
@@ -73,44 +73,45 @@ function sendCoins(address,value,message,name){
 const payNodes = function sendPay(){
   con.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
-  connection.query("SELECT * FROM data", function (err, result, fields){
-    if (!result) return message.reply("No Results.");
-    let obj = JSON.stringify(result);
-    let parsed = JSON.parse(obj);
-
-    let data = result;
-    connection.query("SELECT credits FROM data", function (err, res2, fields){
+    connection.query("SELECT * FROM data", function (err, result, fields){
       if (!result) return message.reply("No Results.");
-      let obj3 = JSON.stringify(res2);
-      let parsed3 = JSON.parse(obj3);
+      let obj = JSON.stringify(result);
+      let parsed = JSON.parse(obj);
 
-      connection.query("SELECT * FROM settings", function (err, res, fields){
+      let data = result;
+      connection.query("SELECT credits FROM data", function (err, res2, fields){
         if (!result) return message.reply("No Results.");
-        let obj2 = JSON.stringify(res);
-        let parsed2 = JSON.parse(obj2);
-        let basePay = parseInt(res[0]['nodesPayment']);
-        let bonusPay = parseInt(res[0]['nodesPaymentBonus']);
-        var message = "Enjoy the EGEM.";
+        let obj3 = JSON.stringify(res2);
+        let parsed3 = JSON.parse(obj3);
 
-        Object.keys(data).forEach(function(key) {
-          var row = data[key];
-          var address = row.address;
-          var userId = row.userId;
-          var name = row.userName;
-          var balance = row.credits;
-          var autoWithdrawals = row.autoWithdrawal;
-          var minBalance = 5000000000000000000;
-          if (autoWithdrawals == "Yes" && balance > minBalance) {
-            let balanceSend = (Number(balance) - Number(minBalance));
-            console.log(userId + " | Pay: " + balanceSend + " New Balance: " + minBalance);
-            let weiAmount = balanceSend;
-            sendCoins(address,weiAmount,message,name);
-            connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [minBalance,userId]);
-          }
+        connection.query("SELECT * FROM settings", function (err, res, fields){
+          if (!result) return message.reply("No Results.");
+          let obj2 = JSON.stringify(res);
+          let parsed2 = JSON.parse(obj2);
+          let basePay = parseInt(res[0]['nodesPayment']);
+          let bonusPay = parseInt(res[0]['nodesPaymentBonus']);
+          var message = "Enjoy the EGEM.";
+
+          Object.keys(data).forEach(function(key) {
+            var row = data[key];
+            var address = row.address;
+            var userId = row.userId;
+            var name = row.userName;
+            var balance = row.credits;
+            var autoWithdrawals = row.autoWithdrawal;
+            var autoFee = 100000000000000000;
+            var minBalance = 10000000000000000000;
+            var baseBalance = 0;
+            if (autoWithdrawals == "Yes" && balance > minBalance) {
+              console.log(userId + " | Paid");
+              let weiAmount = (Number(balance) - Number(autoFee));
+              sendCoins(address,weiAmount,message,name);
+              connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [baseBalance,userId]);
+            }
+          })
         })
       })
     })
-  })
   connection.release();
 })
 console.info("**AUTO WITHDRAWALS SENT**");
