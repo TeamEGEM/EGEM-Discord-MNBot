@@ -63,7 +63,6 @@ exports.run = (client, message, args) => {
             .setURL(miscSettings.ghlink)
             .addField("Game is: ", rollGame)
 
-            connection.release();
             talkedRecently.add(message.author.id);
             setTimeout(() => {
               // Removes the user from the set after 2.5 seconds
@@ -78,7 +77,6 @@ exports.run = (client, message, args) => {
               message.reply("Wait for the cooldown! 120sec.");
               return;
             }
-            connection.release();
             talkedRecently.add(message.author.id);
             setTimeout(() => {
               // Removes the user from the set after 2.5 seconds
@@ -99,7 +97,6 @@ exports.run = (client, message, args) => {
               message.reply("Wait for the cooldown! 10sec.");
               return;
             }
-            //connection.release();
             talkedRecently2.add(message.author.id);
             setTimeout(() => {
               // Removes the user from the set after 2.5 seconds
@@ -118,21 +115,19 @@ exports.run = (client, message, args) => {
               var newBal = (Number(credits) + Number(winBet))
               var chatBal = functions.numberToString(newBal)/Math.pow(10,18)
               connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(newBal),message.author.id]);
-              connection.release();
               return message.reply("Win!"+" :trophy: You rolled a: "+roll+" | New Balance: "+ chatBal)
             } else {
               //message.reply("non free roll "+ roll + " credits: " + credits + " winbet: " + winBet)
               var newBal = (Number(credits) - Number(winBet))
               var chatBal = functions.numberToString(newBal)/Math.pow(10,18)
               connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [functions.numberToString(newBal),message.author.id]);
-              connection.release();
               return message.reply("Lost!"+" :x: You rolled a: "+roll+" | New Balance: "+ chatBal)
             }
 
           }
 
         }
-        connection.release();
+
         } catch (e) {
           console.log(e);
           return message.reply("Not registered, use /botreg <address>.");
@@ -140,6 +135,7 @@ exports.run = (client, message, args) => {
       })
 
     })
+    connection.release();
   })
 
 }
