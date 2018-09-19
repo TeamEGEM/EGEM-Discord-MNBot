@@ -52,7 +52,7 @@ con.getConnection(function(err, connection) {
       let userdata = result;
 
       function delay() {
-      	return new Promise(resolve => setTimeout(resolve, 10));
+      	return new Promise(resolve => setTimeout(resolve, 100));
       }
 
       async function delayedLog(item) {
@@ -61,7 +61,7 @@ con.getConnection(function(err, connection) {
       	// log after delay
         var getbal = await web3.eth.getBalance(item.address);
         var finbal = Number(getbal/Math.pow(10,18));
-      	//console.log(finbal + " | Address: " + item.address);
+      	console.log(finbal + " | Address: " + item.address);
         connection.query(`UPDATE data SET balance =? WHERE address = ?`, [finbal,item.address]);
       }
 
@@ -69,11 +69,10 @@ con.getConnection(function(err, connection) {
       	for (const item of array) {
       		await delayedLog(item);
       	}
-      	console.log("Balance Update Done");
+      	console.log("Done");
       }
       processArray(userdata);
     });
-    connection.release();
 });
 };
 setInterval(updateNodes,miscSettings.BalanceDelay);

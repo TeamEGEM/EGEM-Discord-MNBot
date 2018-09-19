@@ -8,9 +8,10 @@ var getJSON = require('get-json');
 
 // EtherGem web3
 var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
+web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provideregem));
 
 exports.run = (client, message, args) => {
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   message.delete();
   var toHex = args.slice(0).join(" ")
   var hexMessage = web3.utils.toHex(toHex)

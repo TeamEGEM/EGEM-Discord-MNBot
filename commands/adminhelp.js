@@ -5,6 +5,7 @@ const botChans = require("../configs/botchans.json");
 const prefix = miscSettings.prefix;
 const talkedRecently = new Set();
 exports.run = (client, message, args) => {
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   if(!message.member.hasPermission('ADMINISTRATOR')){
     return message.channel.send("You cannot use '/adminhelp' command");
   }

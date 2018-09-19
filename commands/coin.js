@@ -4,6 +4,7 @@ const miscSettings = require("../configs/settings.json");
 var getJSON = require('get-json');
 
 exports.run = (client, message, args) => {
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   if(message.channel.type === "dm") return;
   var btcPrice = getJSON('https://api.egem.io/api/v1/egem_prices', function(error, response){
 		if(!error) {

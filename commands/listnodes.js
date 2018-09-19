@@ -8,7 +8,7 @@ var mysql = require('mysql');
 const Web3 = require("web3");
 // EtherGem web3
 var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
+web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provideregem));
 
 var con = mysql.createPool({
   connectionLimit : 25,

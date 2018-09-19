@@ -5,6 +5,7 @@ const botChans = require("../configs/botchans.json");
 const prefix = miscSettings.prefix;
 const talkedRecently = new Set();
 exports.run = (client, message, args) => {
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   if (talkedRecently.has(message.author.id)) {
     message.reply("Wait for the cooldown! 120sec.");
     return;
@@ -30,7 +31,8 @@ exports.run = (client, message, args) => {
     .addField(prefix+"balance <egemaddress>", "check a users balance.")
     .addField(prefix+"deposit <transactionHash>", "deposit to credits.")
     .addField(prefix+"withdrawal <value>", "claim earned balance.")
-    .addField(prefix+"autopay", "turn auto withdrawal on/off. 10 EGEM min.")
+    .addField(prefix+"autopay", "turn auto withdrawal on/off.")
+    .addField(prefix+"paylimit 1-50", "set threshold for autopay.")
     .addField(prefix+"xfer <discordid> <value>", "send/tip an amount to a user.")
     .addField(prefix+"toHex <value>", "encode a message to hex format.")
     .addField(prefix+"fromHex <value>", "decode a message from hex format.")

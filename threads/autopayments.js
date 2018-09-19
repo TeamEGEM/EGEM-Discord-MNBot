@@ -31,7 +31,7 @@ var con = mysql.createPool({
 
 // EtherGem web3
 var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
+web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provideregem));
 
 // Thread console heartbeat
 const threadHB = function sendHB(){
@@ -77,45 +77,43 @@ const payNodes = function sendPay(){
       if (!result) return message.reply("No Results.");
       let obj = JSON.stringify(result);
       let parsed = JSON.parse(obj);
-
-      let data = result;
-      connection.query("SELECT credits FROM data", function (err, res2, fields){
-        if (!result) return message.reply("No Results.");
-        let obj3 = JSON.stringify(res2);
-        let parsed3 = JSON.parse(obj3);
-
-        connection.query("SELECT * FROM settings", function (err, res, fields){
-          if (!result) return message.reply("No Results.");
-          let obj2 = JSON.stringify(res);
-          let parsed2 = JSON.parse(obj2);
-          let basePay = parseInt(res[0]['nodesPayment']);
-          let bonusPay = parseInt(res[0]['nodesPaymentBonus']);
-          var message = "Enjoy the EGEM.";
-
-          Object.keys(data).forEach(function(key) {
-            var row = data[key];
-            var address = row.address;
-            var userId = row.userId;
-            var name = row.userName;
-            var balance = row.credits;
-            var autoWithdrawals = row.autoWithdrawal;
-            var autoFee = 100000000000000000;
-            var minBalance = 10000000000000000000;
-            var baseBalance = 0;
-            if (autoWithdrawals == "Yes" && balance > minBalance) {
-              console.log(userId + " | Paid");
-              let weiAmount = (Number(balance) - Number(autoFee));
-              sendCoins(address,weiAmount,message,name);
-              connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [baseBalance,userId]);
-            }
-          })
-        })
-      })
+      let userdata = result;
+      function delay() {
+      	return new Promise(resolve => setTimeout(resolve, 30));
+      }
+      async function delayedLog(item) {
+      	// await promise return
+      	await delay();
+      	// log/execute after delay
+        var address = item.address;
+        var userId = item.userId;
+        var name = item.userName;
+        var balance = Number(item.credits);
+        var autoWithdrawals = item.autoWithdrawal;
+        var minBalance = Number(item.minBalance);
+        var autoFee = 100000000000000000;
+        var baseBalance = 0;
+        var message = "Enjoy the EGEM.";
+        if (autoWithdrawals == "Yes" && balance > minBalance) {
+          console.log(userId + " | Paid " + functions.numberToString(balance) + " | Min Bal: " + minBalance);
+          let weiAmount = (Number(balance) - Number(autoFee));
+          sendCoins(address,weiAmount,message,name);
+          connection.query(`UPDATE data SET credits =? WHERE userId = ?`, [baseBalance,userId]);
+        }
+      }
+      async function processArray(array) {
+      	for (const item of array) {
+      		await delayedLog(item);
+      	}
+      	console.log("Done");
+      }
+      processArray(userdata);
     })
   connection.release();
 })
+
 console.info("**AUTO WITHDRAWALS SENT**");
 };
-setInterval(payNodes,miscSettings.AutoPayDelay);
+setInterval(payNodes,300000);
 
 console.log("*NODE Auto Withdrawals SYSTEM** is now Online.");

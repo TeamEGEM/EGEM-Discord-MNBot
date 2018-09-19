@@ -25,7 +25,7 @@ var con = mysql.createPool({
 
 // EtherGem web3
 var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
+web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provideregem));
 
 const prefix = miscSettings.prefix;
 const bot = new Discord.Client({disableEveryone:true});
@@ -85,7 +85,8 @@ bot.on("message",async message => {
 
   if(message.author.bot) return;
   if(message.content.indexOf(miscSettings.prefix) !== 0) return;
-
+  if(message.channel.type === "dm") return;
+  
   // This is the best way to define args. Trust me.
   const args = message.content.slice(miscSettings.prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
@@ -103,6 +104,7 @@ bot.on("message",async message => {
   if(message.content.startsWith(prefix + "easteregg")){
     message.reply("Nice find!")
   }
+
 });
 
 bot.on('error', console.error);

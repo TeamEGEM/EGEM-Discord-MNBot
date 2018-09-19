@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const botSettings = require("../configs/config.json");
 const miscSettings = require("../configs/settings.json");
 var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
+web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provideregem));
 
 exports.run = (client, message, args) => {
   if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");

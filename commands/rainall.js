@@ -32,7 +32,7 @@ const bot = new Discord.Client({disableEveryone:true});
 
 // EtherGem web3
 var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
+web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provideregem));
 
 exports.run = (client, message, args) => {
   if(!message.member.hasPermission('ADMINISTRATOR')){

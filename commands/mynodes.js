@@ -154,20 +154,20 @@ exports.run = (client, message, args) => {
                     .setAuthor("TheEGEMBot", miscSettings.egemspin)
 
                     .setColor(miscSettings.okcolor)
-                    .setDescription("EGEM User Status Info:")
+                    .setDescription("EGEM Node Status Info:")
                     .setFooter(miscSettings.footerBranding, miscSettings.img32x32)
                     .setThumbnail(miscSettings.img32shard)
 
                     .setTimestamp()
                     .setURL(miscSettings.ghlink)
                     .addField("Registered Address:", "["+address+"](https://explorer.egem.io/addr/"+address+")")
-                    .addField("EGEM Rank: ", title, true)
-                    .addField("Next Rank: ", next, true)
-                    .addField("EGEM Balance: ", "💳 = "+amount2+ " EGEM." + " | Est. Value: $ " + usdValue)
-                    .addField("EGEM Credits: ", "💰 = "+creditsT+ " EGEM.")
-                    .addField("Amount Withdrawn: ", (numberOfWDAmount/Math.pow(10,18))+ " EGEM in "+ numberOfWD +" Withdrawals")
-                    .addField("Status: "+theflag, themsg)
-                    .addField("Quarrynodes:", "Use /mynodes to check on there status.")
+                    .addField("Quarry #1: ", "is "+isOnline, true)
+                    .addField("Quarry #2: ", "is "+isOnline2, true)
+                    .addField("Quarry Registered: ", regTxSent)
+                    .addField("Auto Withdrawals Enabled: ", autoWithdrawals, true)
+                    .addField("Threshold: ", (minBalance/Math.pow(10,18)) + " EGEM", true)
+                    .addField("Nodes Earning: ", canEarn, true)
+                    .addField("Last Node Pay: ", (myPay/Math.pow(10,18))+ " EGEM.", true)
                     return message.reply({embed});
                 } else {
                   console.log(error);

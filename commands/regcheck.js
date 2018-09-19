@@ -23,6 +23,18 @@ exports.run = (client, message, args) => {
     var address = args[0];
 
     connection.query(`
+      Select count(*), userId
+      from data
+      group by userId
+      having count(*) > 1
+      `, function (err, blacklist) {
+      if (err) return console.log(err);
+      let parsed = JSON.stringify(blacklist);
+      let obj = JSON.parse(parsed);
+      console.log(parsed);
+      return message.reply(parsed);
+    })
+    connection.query(`
       Select count(*), address
       from data
       group by address

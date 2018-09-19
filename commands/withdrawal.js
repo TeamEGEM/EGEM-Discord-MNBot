@@ -11,7 +11,7 @@ var mysql = require('mysql');
 
 // EtherGem web3
 var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
+web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provideregem));
 
 var pool = mysql.createPool({
   connectionLimit : 25,
@@ -22,7 +22,7 @@ var pool = mysql.createPool({
 });
 const talkedRecently = new Set();
 exports.run = (client, message, args) => {
-  //if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   if (talkedRecently.has(message.author.id)) {
     message.reply("Wait for the cooldown! 120sec.");
     return;

@@ -4,6 +4,7 @@ const miscSettings = require("../configs/settings.json");
 var getJSON = require('get-json');
 
 exports.run = (client, message, args) => {
+  if(message.channel.name != '👾-the-egem-bot') return message.reply("Please use in the-egem-bot channel ONLY!");
   var btcPrice = getJSON('https://graviex.net/api/v2/tickers/egembtc.json', function(error, response){
 		if(!error) {
       var buy = response["ticker"]["buy"];

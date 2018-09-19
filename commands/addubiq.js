@@ -29,8 +29,8 @@ exports.run = (client, message, args) => {
     message.reply("Wait for the cooldown! 120sec.");
     return;
   }
-  var user = message.author.username;
-  var author = message.author.id;
+  const author = message.author.id;
+  const user = message.author.username;
 
   con.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
@@ -40,48 +40,23 @@ exports.run = (client, message, args) => {
         let parsed = JSON.stringify(result);
         let obj = JSON.parse(parsed);
         let authorCheck = obj[0]["userId"];
-        let amount = obj[0]["balance"];
-        let address = obj[0]["address"];
-        let canEarn = obj[0]["canEarn"];
-        let hasCheated = obj[0]["hasCheated"];
-        let regTxSent = obj[0]["regTxSent"];
-        let isOnline = obj[0]["isOnline"];
-        let isOnline2 = obj[0]["isOnline2"];
-        let creditsRaw = obj[0]["credits"];
-        let betaTester = obj[0]["betaTester"];
-        var BN = web3.utils.BN;
-        let creditsBN = new BN(creditsRaw).toString();
-        let creditsT = web3.utils.fromWei(creditsBN, 'ether');
-        var credits = (creditsT/Math.pow(10,18)).toFixed(16);
-        let nodeBonusPay = obj[0]["nodeBonusPay"];
-        let numberOfWD = obj[0]["numberOfWD"];
-        let numberOfWDAmount = obj[0]["numberOfWDAmount"];
-        let myPay = obj[0]["myPay"];
-        let ip = obj[0]["ip"];
-        let ip2 = obj[0]["ip2"];
-        let autoWithdrawals = obj[0]["autoWithdrawal"];
+
+        let ubiq = obj[0]["ubiq"];
         if (authorCheck == author) {
           if (author == authorCheck) {
-            if (autoWithdrawals == "Yes") {
+            if (ubiq == "No") {
               talkedRecently.add(message.author.id);
               setTimeout(() => {
                 // Removes the user from the set after 2.5 seconds
                 talkedRecently.delete(message.author.id);
               }, 120000);
-              let response = "No";
-              connection.query(`UPDATE data SET autoWithdrawal =? WHERE userId = ?`, [response,author]);
-              return message.reply("Auto pay updated to No, User must manually withdrawal credits earned.");
+              //connection.query(`UPDATE dataUBIQ SET userId `, author);
+              connection.query('INSERT INTO dataUBIQ (userId, userName) VALUES (?, ?)', [author,user]);
+              return message.reply("You have enabled the use of UBIQ features.");
+            } else {
+              return message.reply("UBIQ is enabled on account.");
             }
-            if (autoWithdrawals == "No") {
-              talkedRecently.add(message.author.id);
-              setTimeout(() => {
-                // Removes the user from the set after 2.5 seconds
-                talkedRecently.delete(message.author.id);
-              }, 120000);
-              let response = "Yes";
-              connection.query(`UPDATE data SET autoWithdrawal =? WHERE userId = ?`, [response,author]);
-              return message.reply("Auto pay updated to Yes, system will send payments from credits earned once threshold is reached.");
-            }
+
             //console.log(obj);
           }
         }

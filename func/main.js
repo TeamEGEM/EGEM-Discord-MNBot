@@ -13,7 +13,7 @@ const miscSettings = require("../configs/settings.json");
 const botChans = require("../configs/botchans.json");
 // EtherGem web3
 var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provider));
+web3.setProvider(new web3.providers.HttpProvider(miscSettings.web3provideregem));
 
 // Number to string work around for bignumber and scientific-notation.
 function numberToString(num){
